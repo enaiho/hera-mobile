@@ -3,6 +3,7 @@
     "name": "Hera",
     "slug": "Hera",
     "version": "1.0.0",
+    "scheme": "myapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,16 +18,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "io.expo.Hera"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "io.expo.Hera"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     }
-  }
+}
 }
