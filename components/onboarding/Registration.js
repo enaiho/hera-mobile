@@ -12,6 +12,8 @@ import {useHttpGet,useHttpPost} from '../../hooks/useHttp';
 //import * as WebBrowser from 'expo-web-browser';
 //WebBrowser.maybeCompleteAuthSession();
 
+
+
 export default function Registration({navigation}){
 
     const [screenWidth,screenHeight] = [Dimensions.get("window").width,Dimensions.get("window").height]

@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import Panic from './components/user/Panic';
-import PanicDisabled from './components/user/PanicDisabled';
+import PanicActivate from './components/user/PanicActivate';
 import Safety from './components/user/Safety';
 import PhoneNumberEntry from './components/onboarding/PhoneNumberEntry';
 import Registration from './components/onboarding/Registration';
@@ -74,18 +74,19 @@ export default function App() {
               <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{headerShown:false}}></Stack.Screen>
               <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}></Stack.Screen>
               <Stack.Screen name="CreatePIN" component={CreatePIN} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="PanicDisabled" component={PanicDisabled} options={{headerShown: false}}></Stack.Screen>
+              <Stack.Screen name="PanicActivate" component={PanicActivate} options={{headerShown: false}}></Stack.Screen>
+              <Stack.Screen name="Safety" component={Safety} options={{headerShown: false}}></Stack.Screen>
 
 
             </Stack.Navigator>
           </NavigationContainer>
 
+
+
         </View>
     );
 
   }
-
-
 
   return (
 

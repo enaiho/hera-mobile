@@ -140,6 +140,8 @@ const SignUp = ({ route,navigation }) => {
                     <Text style={ styles.btnText }>Next</Text>
 
                 </TouchableOpacity>
+
+
             </View>
 
         </View>

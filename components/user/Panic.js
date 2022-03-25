@@ -27,7 +27,8 @@ const Panic = ({ navigation }) => {
     const panicRadius = (screenWidth / 2) + 20;
     const [animated,setAnimated] = useState(new Animated.Value(0));
     const [opacityA,setOpacityA] = useState(new Animated.Value(1));
-    const BASE_URL = "http://192.168.100.52:5000";
+    const [panic, setPanic] = useState(false);
+    const BASE_URL = "http://192.168.0.103:5000";
 
 
     useEffect(() => {
@@ -65,21 +66,37 @@ const Panic = ({ navigation }) => {
         const payload = { email:user_data.email };
         const response = await useHttpPost(`${BASE_URL}/user/trigger_panic`,payload);
 
+        if( response.data.status === "sent" ){
+
+            setPanic(true);
+
+
+        }
+        else{
+
+            alert(response.data);
+        }
+
 
 
 
     }
     const dePanic = () => {
 
-
         // we would use the state to manage if the sms was sent on the backend...
 
-        ToastAndroid.show("Panic Mode Activated. ", ToastAndroid.SHORT);
-        endPanicAnimation();
-        navigation.navigate("PanicDisabled", {
-            screenWidth: screenWidth,
-            screenHeight: screenHeight
-        })
+        if( panic ) {
+
+            ToastAndroid.show("Panic Mode Activated. ", ToastAndroid.SHORT);
+            endPanicAnimation();
+            navigation.navigate("PanicActivate", {
+                screenWidth: screenWidth,
+                screenHeight: screenHeight
+            })
+        }
+        else{
+            console.log("We couldn't trigger the panic button. ");
+        }
 
         //clearInterval(op);
         //resetTimer();
@@ -87,13 +104,12 @@ const Panic = ({ navigation }) => {
         // next is to navigate to the PIN screen so we can confirm that the user is safe
 
         /*
-        navigation.navigate("PanicDisabled", {
+        navigation.navigate("PanicActivate", {
             screenWidth: screenWidth,
             screenHeight: screenHeight
         })
         */
     }
-
 
     return (
 
