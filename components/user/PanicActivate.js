@@ -3,30 +3,57 @@ import {
     StyleSheet, 
     Text, 
     View,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert,
+    ActivityIndicator
 
 } from 'react-native';
 import Svg, {Path} from 'react-native-svg';
+import {useHttpPut} from '../../hooks/useHttp';
+import Constants from 'expo-constants';
+
 
 export default function PanicActivate({ route, navigation}){
 
+
+
     useEffect( ()=>{
-        if( pin.length == 4 ) authenticatePin()
     })
 
-    const { screenWidth,screenHeight } = route.params;
+    const { screenWidth,screenHeight,triggerId } = route.params;
     const pinCircleRadius = (screenWidth/2)-80;
     const keyCircleRadius = (screenWidth/2)-110;
     const [pin,updatePin] = useState("");
     const [textPin,updateTextPin] = useState("");
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
+    const BASE_URL = "https://hera-dev.herokuapp.com";
+    const [animating,setAnimating] = useState(false);
 
-    const confirmSafety = () => {
+
+    const confirmSafety = async () => {
+
+        
+        setAnimating(true);
+        if( !triggerId ) {  Alert.alert( `Error Message`, `Couldn't find the trigger id for this user. ` ); return;  }
+
+
+        const payload = { safety_status:1 };
+        const response = await useHttpPut(`${BASE_URL}/user/update_safety/${triggerId}`, payload);
+
+        setAnimating(false);
+
+        const { message,safe } = response.data;
+
+
+
+        if( !safe ) {Alert.alert("Error Message. ",message); return; }
+
 
         navigation.navigate( "Safety", {
          screenWidth:screenWidth,
-         screenHeight:screenHeight
+         screenHeight:screenHeight,
+         triggerId:triggerId
         })
 
     }
@@ -45,7 +72,7 @@ export default function PanicActivate({ route, navigation}){
                 <Text></Text>
 
                 <Text style={styles.panicText}>Panic mode activated</Text>
-                <Text style={styles.panicSubText}>Your group has been notified of your danger</Text>
+                <Text style={styles.panicSubText}>Your emergency contact has been notified of your danger</Text>
 
             </View>
 
@@ -60,6 +87,13 @@ export default function PanicActivate({ route, navigation}){
                             <Path fill-rule="evenodd" clip-rule="evenodd" d="M10.2227 0.144893L17.7227 3.26989C18.418 3.55856 18.875 4.24216 18.875 4.96481C18.875 14.9922 11.4961 20 9.49609 20C7.51562 20 0.125 15.0468 0.125 4.96481C0.125 4.24216 0.582031 3.55856 1.28164 3.26989L8.78125 0.144893C8.97305 0.0655566 9.29484 0.000244141 9.50234 0.000244141C9.70859 0.000244141 10.0322 0.0655566 10.2227 0.144893ZM13.0242 8.42263C13.1757 8.24567 13.25 8.02853 13.25 7.81247C13.25 7.52341 13.0312 6.87497 12.3137 6.84056C12.0496 6.84056 11.7871 6.9511 11.6012 7.1672L8.51016 10.7742L7.35039 9.61446C7.16719 9.43138 6.92738 9.33982 6.6875 9.33982C6.15234 9.33982 5.75 9.77771 5.75 10.2773C5.75 10.5508 5.83984 10.7929 6.02461 10.9402L7.89961 12.8152C8.07539 12.9909 8.31469 13.0898 8.5625 13.0898C8.56677 13.0898 8.57148 13.0898 8.5766 13.0899C8.69316 13.0906 9.02276 13.0925 9.27418 12.7976L13.0242 8.42263Z" fill="#3CC13B"/>
                         </Svg>
                         <Text style={ styles.btnText }>I 'm safe now</Text>
+
+                        <ActivityIndicator 
+                            style={styles.indicator}
+                            size="small" 
+                            color="#0000ff"
+                            animating={animating} />
+
                     </View>
 
                 </TouchableOpacity>
@@ -143,6 +177,9 @@ export const _styles = (props) =>  StyleSheet.create({
         fontSize:14,
         flexGrow:0,
         display:"flex"
+    },
+    indicator:{
+        left:20
     }
 
 

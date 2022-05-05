@@ -3,6 +3,7 @@ import { StyleSheet,View,Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const FinishReg = ({ route,navigation }) => {
 
     const {screenWidth,screenHeight} = route.params;
@@ -26,18 +27,21 @@ const FinishReg = ({ route,navigation }) => {
             });
 
         } catch (e) {
+            console.log(e.message);
             console.log("error in storing async storage. ");
         }
     }
 
     return (
 
+
+
         <View style={styles.container}>
 
             <Text style={styles.txtNumber}>Onboarded Successfully </Text>
             <View style={styles.semiContainer}>
 
-                <Text>Thank you for choosing Hera. We believe that your registration on the platform is one step to
+                <Text>Thank you for choosing Solace. We believe that your registration on the platform is one step to
                     safety we are committed to ensuring that we keep you safe.  </Text>
 
                 <TouchableOpacity
@@ -64,12 +68,12 @@ export const _styles = (props) =>  StyleSheet.create({
     },
     btn:{
         textTransform:"lowercase",
-        backgroundColor:"#00A6FF",
+        backgroundColor:"#03C108",
         height:48,
         justifyContent:"center",
         alignItems:"center",
         marginVertical:"5.1%",
-        borderRadius:5,
+        borderRadius:60,
         width:props.screenWidth-50
     },
     btnText:{

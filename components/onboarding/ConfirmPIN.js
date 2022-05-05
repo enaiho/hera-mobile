@@ -1,6 +1,7 @@
 import React,{useState,useRef} from "react";
 import { StyleSheet,View,Text,Alert } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import Constants from 'expo-constants';
 
 
 const ConfirmPIN = ({ route,navigation }) => {
@@ -9,7 +10,7 @@ const ConfirmPIN = ({ route,navigation }) => {
     const {screenWidth,screenHeight,pin_code,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const BASE_URL = "http://192.168.1.131:5000";
+    const BASE_URL = "https://hera-dev.herokuapp.com"
     const contents = ["1_","2_","3_","4_"];
 
     const pin = [];
@@ -27,13 +28,16 @@ const ConfirmPIN = ({ route,navigation }) => {
         if( pin.length < 4 ) {Alert.alert("Error Message","PIN characters not complete. "); return; }
         if( pin_code !== pin.join('') ){ Alert.alert("Error Message", "PIN does not match. "); return; }
 
-        navigation.navigate("FinishReg",{
+        
+        navigation.navigate("ManageCircle",{
             screenWidth:screenWidth,
             screenHeight:screenHeight,
             pin:pin.join(''),
             user:user
 
         });
+
+
     }
 
     return (

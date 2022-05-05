@@ -1,22 +1,91 @@
-import React,{useState} from "react";
-import { StyleSheet,View,Text } from "react-native";
+import React,{useState,useRef,useEffect} from "react";
+import { StyleSheet,View,Text,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
+import Constants from 'expo-constants';
+import SolaceConfig from "../../solace_config";
 
 
 const VerifyPhone = ({ route,navigation }) => {
 
+    
+
     const [code, verifyCode] = useState(null);
     const [isDisabled, toggleButton] = useState(false);
-    const {screenWidth,screenHeight,otp_code,user} = route.params;
+    const [errMessage,setErrorMessage] = useState(null);
+    const {screenWidth,screenHeight,phone,exist,message,otp_code} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const BASE_URL = "http://192.168.1.131:5000";
+    const BASE_URL = SolaceConfig.SERVER_URL;
+    const contents = ["1_","2_","3_","4_"];
 
-    const verifyToken = () => {
 
-        if( code != otp_code  ) return alert("Incorrect token. ");
-        navigation.navigate("CreatePIN",{ screenWidth:screenWidth,screenHeight:screenHeight,user:user });
+    useEffect(() => {
+       // console.log("changed new");
+    });
+
+
+    const pin = [];
+    const mapRef = [];
+    let length = 4;
+
+
+
+    for (let index = 0; index < length; index++) {
+        mapRef.push(useRef())
+    }
+
+
+    const verifyOTP = () => {
+
+
+        // alert( pin.join("") );
+        // if( code != otp_code  ) return alert("Incorrect token. ");
+        // navigation.navigate("CreatePIN",{ screenWidth:screenWidth,screenHeight:screenHeight,user:user });
+
+
+        const pin_val = pin.join("");
+
+        // alert("otp code" + otp_code.toString());
+        // alert("pin value" + pin_val.toString());
+
+        // console.log( pin_val );
+
+
+        if( pin_val === "" || pin_val == undefined || pin.length < 4 ) { 
+            ToastAndroid.show("OTP value not complete. Ensure you type in all characters. ", ToastAndroid.SHORT);      
+            return;
+
+        }
+        else if( otp_code != pin_val  ){ 
+
+            // setTimeout( () =>{
+            //     setErrorMessage("");
+            // } ,5000) 
+            
+            // setErrorMessage("Incorrect Token. Ensure you type in the correct token. ");  
+
+            ToastAndroid.show("Incorrect Token. Ensure you type in the correct token.", ToastAndroid.SHORT);
+            return;
+
+        }
+
+
+        if( exist === true ){
+
+
+            // set the session for the user to login successfully.
+            // navigate to the panic button side
+
+
+            return navigation.navigate("Panic",{ screenWidth:screenWidth,screenHeight:screenHeight });
+        }
+
+
+        return navigation.navigate("SignUp",{ screenWidth:screenWidth,screenHeight:screenHeight,phone:phone,otp_code:otp_code });
+
+
+
     }
 
 
@@ -24,20 +93,60 @@ const VerifyPhone = ({ route,navigation }) => {
 
         <View style={styles.container}>
 
-            <Text style={styles.txtNumber}>Verify your number </Text>
-            <View style={styles.semiContainer}>
-                <TextInput 
-                    style={styles.txtPhone}
-                    onChangeText={verifyCode}
-                    keyboardType="numeric"
-                    
-                    />
 
-                <Text>We 'll send a text to verify your account</Text>
+            <View style={styles.grpCode}>
+                <Text style={styles.txtNumber}>What's the code? </Text>
+                <Text style={styles.txtSub}>Enter the code sent to <Text style={styles.txtMainPhone}>{phone}</Text></Text>
+                
+                <View style={[styles.txtPins]}>
+
+                    {
+
+                        contents.map((content, i) => (
+
+                            <TextInput
+                                style={styles.txtPinInput}
+                                keyboardType="numeric"
+                                key={i}
+                                onChangeText={text => {
+                                    text.length === 1 ? pin.splice(i, 0, text) : pin.splice(i, 1)
+                                    i < length - 1 && text.length > 0 && mapRef[i + 1].current.focus()
+                                    text.length === 0 && i > 0 && mapRef[i].current.focus()
+                                }}
+                                value={pin[i]}
+                                onKeyPress={({ nativeEvent }) => {
+                                    nativeEvent.key === 'Backspace' &&
+                                    i > 0 && mapRef[i - 1].current.focus()
+                                }}
+                                maxLength={1}
+                                returnKeyType={length - 1 ? 'done' : 'next'}
+                                onSubmitEditing={verifyOTP}
+                                ref={mapRef[i]}
+                                autoFocus={i === 0}
+
+                            />
+
+                        ))
+                    }
+
+
+                </View>
+
+
+                <Text></Text>
+
+                <Text style={styles.errorMessage}> {errMessage} </Text>
+
+            </View>
+
+
+            <View style={styles.semiContainer}>
+                
+                
 
                 <TouchableOpacity 
                     style={ styles.btn }
-                    onPress={ verifyToken }
+                    onPress={ verifyOTP }
                     disabled={ isDisabled }>
                     <Text style={ styles.btnText }>Next</Text>
 
@@ -45,6 +154,8 @@ const VerifyPhone = ({ route,navigation }) => {
             </View>
 
         </View>
+
+
     )
 
 };
@@ -53,7 +164,7 @@ export const _styles = (props) =>  StyleSheet.create({
 
     container:{
         flex:1,
-        justifyContent:"center",
+        justifyContent:"space-between",
         alignItems:"center"
     },
     txtPhone:{
@@ -64,12 +175,12 @@ export const _styles = (props) =>  StyleSheet.create({
     },
     btn:{
         textTransform:"lowercase",
-        backgroundColor:"#00A6FF",
+        backgroundColor:"#03C108",
         height:48,
         justifyContent:"center",
         alignItems:"center",
         marginVertical:"5.1%",
-        borderRadius:5,
+        borderRadius:60,
         width:props.screenWidth-50
     },
     btnText:{
@@ -80,16 +191,48 @@ export const _styles = (props) =>  StyleSheet.create({
     txtNumber:{
         fontFamily:"EuclidCircularBold",
         fontSize:24,
-        color:"#0A1F44",
-        width:343,
-        height:32,
-        left:16,
+        color:"#0A1F44"
     },
     semiContainer:{
-
         margin:40
-
+    },
+    grpCode:{
+        top:90
+    },
+    txtPins:{
+        flexDirection: "row",
+        justifyContent:"center",
+        flexWrap:"wrap",
+        right:15,
+        top:20
+    },
+    txtPinInput:{
+        borderColor:"#000000",
+        width:50,
+        height:50,
+        borderWidth:1,
+        margin:15,
+        fontSize:45,
+        textAlign:"center",
+        borderRadius:8
+    },
+    txtSub:{
+        top:10,
+        fontFamily:"EuclidCircularLight",
+        fontSize:12
+    },
+    txtMainPhone:{
+        fontFamily:"EuclidCircularBold"
+    },
+    errorMessage:{
+        top:10,
+        fontFamily:"EuclidCircularLight",
+        fontSize:12,
+        color:"#F03738"
     }
+
+
+
 
 });
 

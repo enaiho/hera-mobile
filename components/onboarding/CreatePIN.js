@@ -1,6 +1,7 @@
 import React,{useState,useRef} from "react";
 import { StyleSheet,View,Text,Alert } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import Constants from 'expo-constants';
 
 
 const CreatePIN = ({ route,navigation }) => {
@@ -10,7 +11,7 @@ const CreatePIN = ({ route,navigation }) => {
     const {screenWidth,screenHeight,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const BASE_URL = "http://192.168.1.131:5000";
+    const BASE_URL = "https://hera-dev.herokuapp.com";
     const contents = ["1_","2_","3_","4_"];
 
     const pin = [];

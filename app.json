@@ -3,7 +3,6 @@
     "name": "Hera",
     "slug": "Hera",
     "version": "1.0.0",
-    "scheme": "myapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -30,6 +29,19 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "bugsnag": {
+        "apiKey": "75e063006f3dfd78c6f6748cc48d9710"
+      }
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "@bugsnag/expo/hooks/post-publish.js",
+          "config": {}
+        }
+      ]
     }
-}
+  }
 }

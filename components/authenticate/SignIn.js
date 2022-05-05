@@ -12,7 +12,7 @@ const SignIn = ({ route,navigation }) => {
     const {screenWidth,screenHeight,token,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const BASE_URL = "http://192.168.100.52:5000";
+    const BASE_URL = "https://hera-dev.herokuapp.com";
 
     const authenticate = async() => {
 

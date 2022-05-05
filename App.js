@@ -1,3 +1,12 @@
+
+
+/*
+-- uncomment this when pushing this to production.
+import Bugsnag from '@bugsnag/expo';
+Bugsnag.start();
+*/
+
+
 import React,{useState,useEffect} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,7 +24,9 @@ import SignUp from './components/onboarding/SignUp';
 import CreatePIN from './components/onboarding/CreatePIN';
 import ConfirmPIN from './components/onboarding/ConfirmPIN';
 import FinishReg from './components/onboarding/FinishReg';
-import SignIn from "./components/authenticate/SignIn";
+import SignIn from './components/authenticate/SignIn';
+import ManageCircle from './components/onboarding/ManageCircle';
+
 
 
 import AppLoading from 'expo-app-loading';
@@ -29,17 +40,25 @@ export default function App() {
   const [IsReady, SetIsReady] = useState(false);
   const [IsAuth, SetAuth] = useState(false);
   const [screenWidth,screenHeight] = [Dimensions.get("window").width,Dimensions.get("window").height];
+
+
+  
   const LoadFonts = async () => {
     await useFonts();
   };
+
+
+
   const isUserAuthenticated = async() => {
 
     const userdata_key = await AsyncStorage.getItem('userdata_key' );
-    if( userdata_key !== "" || userdata_key !== undefined ) return true;
+    if( userdata_key === "" || userdata_key === undefined || userdata_key === null ) return false;
 
     return false;
 
   }
+
+
 
 
   if (!IsReady) {
@@ -47,12 +66,13 @@ export default function App() {
       <AppLoading
         startAsync={LoadFonts}
         onFinish={() => SetIsReady(true)}
-        onError={() => {}} // throw a friendly message to the user.
+        onError={() => alert("error in loading font.")} // throw a friendly message to the user.
       />
     );
   }
 
 
+  
   isUserAuthenticated().then(response => SetAuth(response));
 
 
@@ -65,6 +85,9 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator>
 
+
+
+
               <Stack.Screen name="Panic" screenWidth={screenWidth} options={{ headerShown:false }}>
                 {(props) => <Panic {...props} />}
               </Stack.Screen>
@@ -76,6 +99,11 @@ export default function App() {
               <Stack.Screen name="CreatePIN" component={CreatePIN} options={{headerShown: false}}></Stack.Screen>
               <Stack.Screen name="PanicActivate" component={PanicActivate} options={{headerShown: false}}></Stack.Screen>
               <Stack.Screen name="Safety" component={Safety} options={{headerShown: false}}></Stack.Screen>
+              <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{headerShown: false}}>
+                {(props) => <ManageCircle {...props} />}
+              </Stack.Screen>
+
+
 
 
             </Stack.Navigator>
@@ -99,6 +127,11 @@ export default function App() {
             {(props) => <Registration {...props} />}
           </Stack.Screen>
 
+          <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{headerShown: false}}>
+            {(props) => <ManageCircle {...props} />}
+          </Stack.Screen>
+
+
 
           <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{headerShown:false}}></Stack.Screen>
           <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{headerShown:false}}></Stack.Screen>
@@ -108,10 +141,8 @@ export default function App() {
           <Stack.Screen name="FinishReg" component={FinishReg} options={{headerShown: false}}></Stack.Screen>
           <Stack.Screen name="Panic" component={Panic} options={{headerShown: false}}></Stack.Screen>
           <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}}></Stack.Screen>
+          
 
-          {/*
-          <Stack.Screen name="TestScreen" component={TesstScreen}></Stack.Screen>
-          */}
 
         </Stack.Navigator>
       </NavigationContainer>

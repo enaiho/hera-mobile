@@ -9,13 +9,19 @@ import {
     ToastAndroid,
     Button,
     Dimensions,
-    Animated
+    Animated,
+    Alert,
+    PermissionsAndroid
 
 } from 'react-native';
 
 import { LongPressGestureHandler } from 'react-native-gesture-handler';
 import {useHttpPost} from '../../hooks/useHttp';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from 'expo-location';
+import Constants from 'expo-constants';
+
+
 
 
 const Panic = ({ navigation }) => {
@@ -28,11 +34,37 @@ const Panic = ({ navigation }) => {
     const [animated,setAnimated] = useState(new Animated.Value(0));
     const [opacityA,setOpacityA] = useState(new Animated.Value(1));
     const [panic, setPanic] = useState(false);
-    const BASE_URL = "http://192.168.0.103:5000";
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+    const [triggerId, setTriggerId] = useState(null);
+    const BASE_URL = "https://hera-dev.herokuapp.com";
+
+
+
+
+    // console.log( Constants.manifest.server_url  );
+
 
 
     useEffect(() => {
+
+        (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+ 
+
+    })();
+
+
+
     },[])
+
+
+
 
     const triggerPanicAnimation = () => {
 
@@ -50,34 +82,38 @@ const Panic = ({ navigation }) => {
     }
 
     const initiatePanic = () => {
+        ToastAndroid.show("Initiating Panic Mode.. ", ToastAndroid.SHORT);
+
 
     }
     const activatePanic = async() => {
 
+
+        let user_data = await AsyncStorage.getItem('userdata_key' );
         triggerPanicAnimation();
         ToastAndroid.show("Panic Mode Triggered. You can take your finger off to activate panic mode. ", ToastAndroid.SHORT);
 
 
-        // send the panic message to the user
+        const location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
 
-        let user_data = await AsyncStorage.getItem('userdata_key' );
+        // alert(location);
+
+        if( location === null  ) return;
+
+
         user_data = JSON.parse(user_data);
-
-        const payload = { email:user_data.email };
+        const payload = { email:user_data.email,location:JSON.stringify(location) };
         const response = await useHttpPost(`${BASE_URL}/user/trigger_panic`,payload);
 
-        if( response.data.status === "sent" ){
 
+        const { status,message,trigger_id } = response.data;
+
+        if( response.data.status === "sent" ) {
             setPanic(true);
-
-
-        }
-        else{
-
-            alert(response.data);
+            setTriggerId(trigger_id);
         }
 
-
+        setErrorMsg( message );
 
 
     }
@@ -85,30 +121,23 @@ const Panic = ({ navigation }) => {
 
         // we would use the state to manage if the sms was sent on the backend...
 
+        endPanicAnimation();
         if( panic ) {
 
             ToastAndroid.show("Panic Mode Activated. ", ToastAndroid.SHORT);
-            endPanicAnimation();
             navigation.navigate("PanicActivate", {
                 screenWidth: screenWidth,
-                screenHeight: screenHeight
+                screenHeight: screenHeight,
+                triggerId:triggerId
             })
         }
         else{
-            console.log("We couldn't trigger the panic button. ");
+            Alert.alert(
+                "Panic Response Messgae",
+                `We couldn't send the response trigger. ${ errorMsg } `
+                );
         }
 
-        //clearInterval(op);
-        //resetTimer();
-
-        // next is to navigate to the PIN screen so we can confirm that the user is safe
-
-        /*
-        navigation.navigate("PanicActivate", {
-            screenWidth: screenWidth,
-            screenHeight: screenHeight
-        })
-        */
     }
 
     return (
@@ -155,6 +184,8 @@ const Panic = ({ navigation }) => {
                 },styles.triggerCircle]}>
 
             </Animated.View>
+
+
 
         </View>
     );
