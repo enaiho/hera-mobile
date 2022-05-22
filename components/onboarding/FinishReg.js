@@ -2,33 +2,47 @@ import React from "react";
 import { StyleSheet,View,Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useHttpPost} from '../../hooks/useHttp';
+import SolaceConfig from "../../solace_config";
+
 
 
 const FinishReg = ({ route,navigation }) => {
 
-    const {screenWidth,screenHeight} = route.params;
+    const {screenWidth,screenHeight,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const {user} = route.params;
+    const BASE_URL = SolaceConfig.SERVER_URL;
 
+
+    let user_rec = JSON.parse(user);
+
+    
     const getStarted = async() => {
+
 
         // setup the value in the async storage and use that to persist data over the different screens.
         // 1. setup a key
         // 2. navigate to the Panic Screen
 
+
+        const payload = {"phone":user_rec.phone};
+        const response = await useHttpPost(`${BASE_URL}/user/get_rec_phone`,payload);
+        const { message,authenticated,user } = response.data;
+
+
         try {
 
-            await AsyncStorage.setItem('userdata_key',user ); // the user object coming has already been stringified.
+            await AsyncStorage.setItem('userdata_key',JSON.stringify(user) ); // the user object coming has already been stringified.
             navigation.navigate("Panic",{
                 screenWidth:screenWidth,
-                screenHeight:screenHeight
+                screenHeight:screenHeight,
+                user:JSON.stringify(user)
 
             });
 
         } catch (e) {
             console.log(e.message);
-            console.log("error in storing async storage. ");
         }
     }
 

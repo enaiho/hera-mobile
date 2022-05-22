@@ -34,6 +34,8 @@ const SignUp = ({ route,navigation }) => {
     // submit the number to the server and generate a 4 digit code and send it via sms
     // once it is sent, return a response to the user and move to the verify your number page
 
+
+
     const registerUser = async () => {
        
 

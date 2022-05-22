@@ -1,5 +1,5 @@
 import React,{useState,useRef} from "react";
-import { StyleSheet,View,Text, ActivityIndicator,Alert } from "react-native";
+import { StyleSheet,View,Text, ActivityIndicator,Alert,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
 import {useHttpGet,useHttpPost} from '../../hooks/useHttp';
@@ -33,39 +33,11 @@ const PhoneNumberEntry = ({ route,navigation }) => {
        
         try{
 
-            // return navigation.navigate("VerifyPhone", {
-            //         screenWidth: screenWidth,
-            //         screenHeight: screenHeight,
-            //         phone: phoneFormatted,
-            //         exist:"",
-            //         message:"",
-            //         otp_code:""
 
-            //     });
+            if( phone === "" || phone === null )return ToastAndroid.show("The number You have typed in is incorrect. ",  ToastAndroid.SHORT);
+            if(  phone.length < 10  ) return ToastAndroid.show("The number You have typed in is incorrect. ",  ToastAndroid.SHORT);
 
-
-            if( phone === "" || phone === null ){
-
-                setTimeout( () =>{
-                    setErrMsg("");
-                } ,5000) 
-                
-                setErrMsg("Phone Number cannot be empty. ");               
-                return;
-
-            }
-            else if(  phone.length < 10  ){
-
-                setTimeout( () =>{
-                    setErrMsg("");
-                } ,5000) 
-                
-                setErrMsg("The number You have typed in is incorrect.  ");               
-                return;
-
-            }
-
-
+       
             const phone_value = phoneFormatted.substring(1);
 
 
@@ -76,6 +48,11 @@ const PhoneNumberEntry = ({ route,navigation }) => {
             const status = response.status;
             const { message,exist,otp_sent,otp_code } = data;
 
+
+            // console.log( response.data );
+
+
+            setAnimating(false);
 
 
             if( status === 200 || status === 201 ){
@@ -93,26 +70,18 @@ const PhoneNumberEntry = ({ route,navigation }) => {
 
             }
 
-            setTimeout( () =>{
-                setErrMsg("");
-            } ,5000) 
-            
-            setErrMsg("An error occured from the server... ");               
-            return;
+            return ToastAndroid.show(`Server Error: ${message} `,  ToastAndroid.SHORT);
 
         }
         catch(e){
-            
             setAnimating(false);
-            setTimeout( () =>{
-                setErrMsg("");
-            } ,5000) 
-            
-            setErrMsg(` ${e.message}`);   
-
+            ToastAndroid.show(`Exception Error: ${e.message} `,  ToastAndroid.SHORT);
         }
 
     }
+
+
+
 
     return (
 
@@ -120,6 +89,8 @@ const PhoneNumberEntry = ({ route,navigation }) => {
 
             
             <View style={styles.grpNumber}>
+
+            
                 
                 <Text style={styles.txtNumber}>What's your number? </Text>
                 <Text style={styles.txtSub}>We’ll text a code to verify your phone</Text>
@@ -183,7 +154,6 @@ export const _styles = (props) =>  StyleSheet.create({
         alignItems:"center"
     },
     phoneInput:{
-        borderColor:"#F03738",
         borderWidth:1,
         borderRadius:8
     },

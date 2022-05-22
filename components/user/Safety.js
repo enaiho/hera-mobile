@@ -59,6 +59,8 @@ export default function Safety({route, navigation}){
 
 
     )
+
+
 }
 
 export const _styles = (props) => StyleSheet.create({
@@ -70,8 +72,8 @@ export const _styles = (props) => StyleSheet.create({
       alignItems: 'center'
     },
     finishButton:{
-        backgroundColor: "#00A6FF",
-        borderRadius:8,
+        backgroundColor: "#03C108",
+        borderRadius:60,
         width:props.screenWidth-90,
         height:47,
         justifyContent:"center",

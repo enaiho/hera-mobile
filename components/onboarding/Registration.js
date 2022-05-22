@@ -103,6 +103,7 @@ export default function Registration({navigation}){
                 style={[styles({}).appleBtn,styles(styleProps).btn]}
                 onPress ={() => navigation.navigate("PhoneNumberEntry", {screenWidth:screenWidth,screenHeight:screenHeight} )}>
 
+
                     <View style= {[styles({}).btnIcons]}>
                         <Text style={ [styles(styleProps).btnText] }>Get Started</Text>
                     </View>

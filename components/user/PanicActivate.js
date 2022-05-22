@@ -108,7 +108,7 @@ export const _styles = (props) =>  StyleSheet.create({
 
     container:{
         flex:1,
-        backgroundColor:"#0A1F44",
+        backgroundColor:"#000000",
         justifyContent: "center",
         alignItems:"center"
     },
@@ -132,7 +132,7 @@ export const _styles = (props) =>  StyleSheet.create({
     btnSafety:{
 
         backgroundColor: "#FFFFFF",
-        borderRadius:8,
+        borderRadius:60,
         width:props.screenWidth-90,
         height:47,
         justifyContent:"center",

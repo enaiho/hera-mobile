@@ -1,9 +1,12 @@
 import React,{useState,useRef,useEffect} from "react";
 import { StyleSheet,View,Text,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
+import {useHttpPost} from '../../hooks/useHttp';
+
 
 
 const VerifyPhone = ({ route,navigation }) => {
@@ -36,20 +39,10 @@ const VerifyPhone = ({ route,navigation }) => {
     }
 
 
-    const verifyOTP = () => {
-
-
-        // alert( pin.join("") );
-        // if( code != otp_code  ) return alert("Incorrect token. ");
-        // navigation.navigate("CreatePIN",{ screenWidth:screenWidth,screenHeight:screenHeight,user:user });
+    const verifyOTP = async() => {
 
 
         const pin_val = pin.join("");
-
-        // alert("otp code" + otp_code.toString());
-        // alert("pin value" + pin_val.toString());
-
-        // console.log( pin_val );
 
 
         if( pin_val === "" || pin_val == undefined || pin.length < 4 ) { 
@@ -58,12 +51,6 @@ const VerifyPhone = ({ route,navigation }) => {
 
         }
         else if( otp_code != pin_val  ){ 
-
-            // setTimeout( () =>{
-            //     setErrorMessage("");
-            // } ,5000) 
-            
-            // setErrorMessage("Incorrect Token. Ensure you type in the correct token. ");  
 
             ToastAndroid.show("Incorrect Token. Ensure you type in the correct token.", ToastAndroid.SHORT);
             return;
@@ -78,12 +65,32 @@ const VerifyPhone = ({ route,navigation }) => {
             // navigate to the panic button side
 
 
-            return navigation.navigate("Panic",{ screenWidth:screenWidth,screenHeight:screenHeight });
+
+            const payload = {"phone":phone};
+            const response = await useHttpPost(`${BASE_URL}/user/get_rec_phone`,payload);
+            const { message,authenticated,user } = response.data;
+
+
+
+            if( authenticated === false ) { alert(message); return; }
+
+            try {
+
+                await AsyncStorage.setItem('userdata_key',JSON.stringify(user) ); // the user object coming has already been stringified.
+                return navigation.navigate("Panic",{
+                    screenWidth:screenWidth,
+                    screenHeight:screenHeight,
+                    user:JSON.stringify(user)
+                });
+
+            } catch (e) {
+                console.log("error in storing async storage. ");
+                console.log(e);
+            }
+
         }
 
-
         return navigation.navigate("SignUp",{ screenWidth:screenWidth,screenHeight:screenHeight,phone:phone,otp_code:otp_code });
-
 
 
     }
@@ -132,7 +139,6 @@ const VerifyPhone = ({ route,navigation }) => {
 
                 </View>
 
-
                 <Text></Text>
 
                 <Text style={styles.errorMessage}> {errMessage} </Text>
@@ -141,8 +147,7 @@ const VerifyPhone = ({ route,navigation }) => {
 
 
             <View style={styles.semiContainer}>
-                
-                
+        
 
                 <TouchableOpacity 
                     style={ styles.btn }
@@ -151,6 +156,8 @@ const VerifyPhone = ({ route,navigation }) => {
                     <Text style={ styles.btnText }>Next</Text>
 
                 </TouchableOpacity>
+
+
             </View>
 
         </View>
@@ -230,8 +237,6 @@ export const _styles = (props) =>  StyleSheet.create({
         fontSize:12,
         color:"#F03738"
     }
-
-
 
 
 });
