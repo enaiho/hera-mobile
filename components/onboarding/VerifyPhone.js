@@ -65,15 +65,13 @@ const VerifyPhone = ({ route,navigation }) => {
             // navigate to the panic button side
 
 
-
             const payload = {"phone":phone};
             const response = await useHttpPost(`${BASE_URL}/user/get_rec_phone`,payload);
             const { message,authenticated,user } = response.data;
 
 
-
-            if( authenticated === false ) { alert(message); return; }
-
+            if( authenticated === false ) return navigation.navigate("SignUp",{ screenWidth:screenWidth,screenHeight:screenHeight,phone:phone,otp_code:otp_code });
+            
             try {
 
                 await AsyncStorage.setItem('userdata_key',JSON.stringify(user) ); // the user object coming has already been stringified.
@@ -89,9 +87,6 @@ const VerifyPhone = ({ route,navigation }) => {
             }
 
         }
-
-        return navigation.navigate("SignUp",{ screenWidth:screenWidth,screenHeight:screenHeight,phone:phone,otp_code:otp_code });
-
 
     }
 

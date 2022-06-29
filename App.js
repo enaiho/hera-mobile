@@ -215,6 +215,7 @@ export default function App() {
               <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{headerShown: false}}></Stack.Screen>
 
 
+
             </Stack.Navigator>
           </NavigationContainer>
 

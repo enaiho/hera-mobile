@@ -111,10 +111,7 @@ export default function Registration({navigation}){
 
             </View>
 
-
         </View>
-    
-
     )
 
 }
@@ -177,5 +174,6 @@ export const styles = (props) => StyleSheet.create({
         color:"red",
         fontFamily:"EuclidCircularBold",
     }
-
 });
+
+

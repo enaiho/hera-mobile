@@ -127,7 +127,7 @@ const Panic = ({ route,navigation }) => {
 
 
             const payload = { email:user_data.email,location:JSON.stringify(location), batteryDetails:JSON.stringify(batteryDetails) };
-            const response = await useHttpPost(`${BASE_URL}/user/trigger_panic`,payload);
+            const response = await useHttpPost(`${BASE_URL}/trigger/panic`,payload);
             const { status,message,trigger_id } = response.data;
 
 
@@ -142,12 +142,12 @@ const Panic = ({ route,navigation }) => {
                 
             }
             else{
-                ToastAndroid.show(`Error: We couldn't send the response trigger ${message.toUpperCase()}`, ToastAndroid.SHORT );
+                ToastAndroid.show(`Error: We couldn't send the response trigger ${message.toUpperCase()}`, ToastAndroid.LONG );
             }
 
         }
         catch(e){
-            ToastAndroid.show( `Exception Error: ${e.message.toString().toUpperCase()}`,ToastAndroid.SHORT );
+            ToastAndroid.show( `Exception Error: ${e.message.toString().toUpperCase()}`,ToastAndroid.LONG );
             endPanicAnimation();
         }
 

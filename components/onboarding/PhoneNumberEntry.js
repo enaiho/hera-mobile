@@ -34,28 +34,29 @@ const PhoneNumberEntry = ({ route,navigation }) => {
         try{
 
 
+
             if( phone === "" || phone === null )return ToastAndroid.show("The number You have typed in is incorrect. ",  ToastAndroid.SHORT);
             if(  phone.length < 10  ) return ToastAndroid.show("The number You have typed in is incorrect. ",  ToastAndroid.SHORT);
 
        
-            const phone_value = phoneFormatted.substring(1);
+            let phone_value = phoneFormatted.substring(1);
+            if( phone_value[3] === "0" )  phone_value = `${phone_value.substring(0,3)}${phone_value.substring(4)}`;
 
 
             setAnimating(true);
-            const response =  await axios.post(`${BASE_URL}/user/verify_phone`, {phone:phone_value });
+            const response =  await useHttpPost(`${BASE_URL}/verify_phone`, {phone:phone_value });
             setAnimating(false);
             const data = response.data;
             const status = response.status;
             const { message,exist,otp_sent,otp_code } = data;
 
 
-            // console.log( response.data );
-
 
             setAnimating(false);
 
 
-            if( status === 200 || status === 201 ){
+
+            if( otp_sent ){
 
 
                 return navigation.navigate("VerifyPhone", {
@@ -110,6 +111,7 @@ const PhoneNumberEntry = ({ route,navigation }) => {
                     onChangeFormattedText={onChangePhoneFormatted}
                     withDarkTheme
                     autoFocus
+                    textInputProps={{ maxLength:10 }} 
                   />
 
 

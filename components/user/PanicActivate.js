@@ -11,6 +11,7 @@ import {
 import Svg, {Path} from 'react-native-svg';
 import {useHttpPut} from '../../hooks/useHttp';
 import Constants from 'expo-constants';
+import SolaceConfig from "../../solace_config";
 
 
 export default function PanicActivate({ route, navigation}){
@@ -27,7 +28,7 @@ export default function PanicActivate({ route, navigation}){
     const [textPin,updateTextPin] = useState("");
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
-    const BASE_URL = "https://hera-dev.herokuapp.com";
+    const BASE_URL = SolaceConfig.SERVER_URL;
     const [animating,setAnimating] = useState(false);
 
 
@@ -39,22 +40,22 @@ export default function PanicActivate({ route, navigation}){
 
 
         const payload = { safety_status:1 };
-        const response = await useHttpPut(`${BASE_URL}/user/update_safety/${triggerId}`, payload);
+        const response = await useHttpPut(`${BASE_URL}/trigger/update_safety/${triggerId}`, payload);
 
         setAnimating(false);
 
         const { message,safe } = response.data;
 
-
-
         if( !safe ) {Alert.alert("Error Message. ",message); return; }
-
 
         navigation.navigate( "Safety", {
          screenWidth:screenWidth,
          screenHeight:screenHeight,
          triggerId:triggerId
         })
+
+
+
 
     }
 
