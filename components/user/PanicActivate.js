@@ -21,7 +21,7 @@ export default function PanicActivate({ route, navigation}){
     useEffect( ()=>{
     })
 
-    const { screenWidth,screenHeight,triggerId } = route.params;
+    const { screenWidth,screenHeight,triggerId,incidentId,incidentMessage } = route.params;
     const pinCircleRadius = (screenWidth/2)-80;
     const keyCircleRadius = (screenWidth/2)-110;
     const [pin,updatePin] = useState("");
@@ -39,7 +39,7 @@ export default function PanicActivate({ route, navigation}){
         if( !triggerId ) {  Alert.alert( `Error Message`, `Couldn't find the trigger id for this user. ` ); return;  }
 
 
-        const payload = { safety_status:1 };
+        const payload = { safety_status:1,incidentId:incidentId,incidentMessage:incidentMessage };
         const response = await useHttpPut(`${BASE_URL}/trigger/update_safety/${triggerId}`, payload);
 
         setAnimating(false);
@@ -53,8 +53,6 @@ export default function PanicActivate({ route, navigation}){
          screenHeight:screenHeight,
          triggerId:triggerId
         })
-
-
 
 
     }

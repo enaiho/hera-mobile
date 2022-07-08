@@ -30,6 +30,7 @@ import ManageCircle from './components/onboarding/ManageCircle';
 import Settings from './components/user/Settings';
 import EditProfile from './components/user/EditProfile';
 import EmergencyContacts from './components/user/EmergencyContacts';
+import PanicEmergencyMessage from './components/user/PanicEmergencyMessage';
 import * as Location from 'expo-location';
 import * as Battery from 'expo-battery';
 import SolaceConfig from "./solace_config";
@@ -255,7 +256,7 @@ export default function App() {
           <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}></Stack.Screen>
           <Stack.Screen name="Safety" component={Safety} options={{headerShown: false}}></Stack.Screen>
           <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{headerShown: false}}></Stack.Screen>
-
+          <Stack.Screen name="PanicEmergencyMessage" component={PanicEmergencyMessage} options={{headerShown: false}}></Stack.Screen>
 
          
         </Stack.Navigator>

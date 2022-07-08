@@ -125,19 +125,19 @@ const Panic = ({ route,navigation }) => {
             catch(e){ batteryDetails = {};  }
 
 
-
             const payload = { email:user_data.email,location:JSON.stringify(location), batteryDetails:JSON.stringify(batteryDetails) };
             const response = await useHttpPost(`${BASE_URL}/trigger/panic`,payload);
-            const { status,message,trigger_id } = response.data;
+            const { status,message,trigger_id,incidents } = response.data;
 
 
             if( response.data.status === "sent" ) {
 
                 endPanicAnimation();
-                return navigation.navigate("PanicActivate", {
+                return navigation.navigate("PanicEmergencyMessage", {
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
-                    triggerId:trigger_id
+                    triggerId:trigger_id,
+                    incidents:incidents
                 });
                 
             }
@@ -203,7 +203,6 @@ const Panic = ({ route,navigation }) => {
                     </Svg>
 
 
-
                     </View>
 
 
@@ -214,10 +213,6 @@ const Panic = ({ route,navigation }) => {
 
 
             <View style={styles.container}>
-
-
-
-
 
 
                 <TouchableOpacity style={[styles.panicBtn]}>
