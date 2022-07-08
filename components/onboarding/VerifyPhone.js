@@ -17,6 +17,7 @@ const VerifyPhone = ({ route,navigation }) => {
     const [isDisabled, toggleButton] = useState(false);
     const [errMessage,setErrorMessage] = useState(null);
     const {screenWidth,screenHeight,phone,exist,message,otp_code} = route.params;
+    console.log({otp_code})
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
     const BASE_URL = SolaceConfig.SERVER_URL;
