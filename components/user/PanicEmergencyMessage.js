@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import Svg, {Path} from 'react-native-svg';
-import {useHttpPut} from '../../hooks/useHttp';
+import { useHttpPut } from '../../hooks/useHttp';
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import RadioButtonGroup, { RadioButtonItem } from "expo-radio-button";
@@ -34,12 +34,12 @@ export default function PanicEmergencyMessage({ route, navigation}){
     const [incidentMessage, setIncidentMessage] = useState("");
 
 
+
+
     const customNavigate = (navigateParams) => {
 
 
     	const { incidentId,incidentMessage } = navigateParams;
-
-
 
     	return navigation.navigate( "PanicActivate", {
 	         screenWidth:screenWidth,
@@ -48,20 +48,30 @@ export default function PanicEmergencyMessage({ route, navigation}){
 	         incidentId:incidentId,
 	         incidentMessage:incidentMessage
         })
-
     }
 
-    const registerEmergencyMessage = async () => {
+    const registerEmergencyMessage = () => {
+
+
+
+
+        let tag;
+        const foundIncident = incidents.filter( ( item ) => item._id.toString() === incidentId );
+        if( foundIncident ) tag = foundIncident[0].tag.toLowerCase().trim();
 
 
         if(  incidentId === "" ) {ToastAndroid.show("Please select an option. ", ToastAndroid.LONG); return; }
+        else if( tag === "other" && incidentMessage === "" ) {ToastAndroid.show("Pleae type in the message to help us understand the incident. ", ToastAndroid.LONG); return; }
+
+
         customNavigate( { incidentId:incidentId, incidentMessage:incidentMessage } );
 
+
+
     }
-    const skipEmergencyMessage = async() => customNavigate( { incidentId:"", incidentMessage:"" } );
+    const skipEmergencyMessage = () => customNavigate( { incidentId:"", incidentMessage:"" } );
 
     const radioList = () => {
-
 
     	return (
 
@@ -69,10 +79,11 @@ export default function PanicEmergencyMessage({ route, navigation}){
 
 			 	const { _id,label } = item;
 		    	return(
-		   			<RadioButtonItem key={_id} value={_id.toString()} label={
-            			<Text style={{ color: "#000000" }}>{label}</Text>
+		    			
+		   			<RadioButtonItem key={_id} style={styles.radioButton} value={_id.toString()} label={
+            			<Text style={styles.radioText}>{label}</Text>
           			}/>
-	
+
 		   		)
 
 		    })
@@ -81,47 +92,42 @@ export default function PanicEmergencyMessage({ route, navigation}){
     }
 
 
+    !incidents && skipEmergencyMessage();
+
+
 
     return (
 
 
-        <View style={styles.container}>
-
-
+    	<View style={styles.container}>
+   
         	<View style={styles.txtHeader}>
-        		<Text>Report Incident</Text>
-        	</View>
+
+        		<Text style={styles.txtReportIncident}>Report Incident</Text>
+        		<View style={styles.safetyOptions}>
+
+	                <RadioButtonGroup
+	                    containerStyle={{ marginBottom: 10 }}
+	                    selected={incidentId}
+	                    onSelected={(value) => setIncidentId(value)}
+	                    radioBackground="green">
+
+	                    { radioList()  }
 
 
-        	<View style={styles.safetyOptions}>
+	                </RadioButtonGroup>
 
-        		
-
-
-        		<RadioButtonGroup
-			        containerStyle={{ marginBottom: 10 }}
-			        selected={incidentId}
-			        onSelected={(value) => setIncidentId(value)}
-			        radioBackground="green">
-
-        			{ radioList()  }
-
-
-        		</RadioButtonGroup>
-
-
-
-        		<TextInput
-        			onChangeText={setIncidentMessage}
-        			style={{ height:200, textAlignVertical: 'top', 
-				      }}/>
-			    
+	                <TextInput
+	                    onChangeText={setIncidentMessage}
+	                    multiline={true}
+	                    style={ styles.txtOtherIncident }
+	                    placeholder="Other Incident"
+	                    />
+            	</View>
 
         	</View>
 
-
-
-    	    <View>
+    	    <View style={styles.btnGrp}>
 
                 <TouchableOpacity 
                     style={ styles.btn }
@@ -130,21 +136,14 @@ export default function PanicEmergencyMessage({ route, navigation}){
 
                 </TouchableOpacity>
 
-            </View>
-
-
-            <View>
-
-                <TouchableOpacity 
-                    style={ styles.btn }
+                 <TouchableOpacity 
+                    style={ styles.btnSkip }
                     onPress={skipEmergencyMessage}>
-                    <Text style={ styles.btnText }>Skip</Text>
+                    <Text style={ styles.btnSkipText }>Skip</Text>
 
                 </TouchableOpacity>
 
             </View>
-
-
 
         </View>
     )
@@ -155,83 +154,77 @@ export const _styles = (props) =>  StyleSheet.create({
     container:{
         flex:1,
         justifyContent: "center",
-        alignItems:"center"
+        alignItems:"center",
+        flexDirection:"column"
     },
-    safeText:{
-        fontSize:20,
-        textAlign:'center',
-        color:"#ffffff",
-        fontWeight: "bold",
-        letterSpacing: 1
-    },
-    pinCircle:{
-        backgroundColor:"#68D8FF",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    inputPin:{
-        textAlign:"center",
-        color:"#ffffff",
-        fontSize: 20
-    },
-    btnSafety:{
-
-        backgroundColor: "#FFFFFF",
-        borderRadius:60,
-        width:props.screenWidth-90,
-        height:47,
-        justifyContent:"center",
-        alignItems:"center"
+    txtHeader:{
+    	flex:1,
+    	marginTop:45,
 
     },
-    panicGrpTxt:{
-        flex:3,
-        justifyContent:"center",
-        alignItems:"center"
+    txtReportIncident:{
+    	textAlign: "center",
+    	fontFamily:"EuclidCircularBold",
+    	color:"#191414",
+    	fontSize:20,
+    	lineHeight:28
     },
-    btnSafetyGrp:{
-
-        flex:1,
-        justifyContent:'flex-end',
-        bottom:props.screenHeight-720
+    safetyOptions:{
+    	top:15
     },
-    panicText:{
-        fontFamily:"EuclidCircularBold",
-        color:"#FFFFFF",
-        fontSize: 20,
-        fontStyle:"normal",
-        lineHeight:28
-    },
-    panicSubText:{
-
-        fontFamily:"EuclidCircularLight",
-        color:"#FFFFFF",
-        fontSize: 14,
-        fontStyle:"normal",
-        lineHeight:28
-
-    },
-    safeBtn:{
-        flexDirection:"row",
-        right:10
+    btnGrp:{
+    	position:"absolute",
+    	bottom:0
     },
     btnText:{
         color:"#FFFFFF",
         fontFamily:"EuclidCircularLight",
-        fontSize:14
-    },
-    indicator:{
-        left:20
+        fontSize:14,
+        textTransform:"uppercase",
+        fontWeight:"bold"
     },
     btn:{
-        textTransform:"lowercase",
         backgroundColor:"#03C108",
         height:48,
         justifyContent:"center",
         alignItems:"center",
-        marginVertical:"5.1%",
         borderRadius:60,
-        width:props.screenWidth-50
+        width:props.screenWidth-50,
+    },
+    btnSkip:{
+        backgroundColor:"#F0F2F4",
+        height:48,
+        justifyContent:"center",
+        alignItems:"center",
+        borderRadius:60,
+        width:props.screenWidth-50,
+       
+    },
+    btnSkipText:{
+        color:"#90979E",
+        fontFamily:"EuclidCircularLight",
+        fontSize:14,
+        textTransform:"uppercase",
+        fontWeight:"bold"
+    },
+    txtOtherIncident:{
+    	borderWidth:1,
+    	borderColor:"#DFE4E8",
+    	borderRadius:8,
+    	height:90,
+    	width:341,
+    	fontFamily:"EuclidCircularLight"
+    },
+    radioButton:{
+    	position:"absolute",
+    	right:0,
+    	justifyContent:"space-between"
+    },
+    radioText:{
+    	fontFamily:"EuclidCircularLight",
+    	color:"#000000",
+    	justifyContent:"space-between",
+    	height:30
     }
 
 

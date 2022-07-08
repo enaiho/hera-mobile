@@ -1,4 +1,3 @@
-
 import Svg, {
     Path,
 } from 'react-native-svg';
