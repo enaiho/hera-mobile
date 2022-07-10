@@ -93,15 +93,12 @@ export default function App() {
     const { trigger } = notification.request;
 
 
-
     const { body,message } = trigger.remoteMessage.data;
     const parseDataFromPN = JSON.parse(body);
-    const { triggerId,email,pushType } = parseDataFromPN;
-
+    const { email,triggerId,pushType } = parseDataFromPN;
 
 
     // const dataFromPN = JSON.parse(b)
-
     //{"triggerId":"","email":"osahonmichael@yahoo.com","pushType":"location"}
     // console.log( typeof body);
     // return;
@@ -111,25 +108,27 @@ export default function App() {
 
 
       // resend the instance to the user
-
+      
 
       const location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
       const batteryDetails = await Battery.getPowerStateAsync();
       const payload = {
 
-        location: JSON.stringify( location ),
         email: email,
-        triggerId:triggerId,
-        batteryDetails:JSON.stringify(batteryDetails)
+        location: JSON.stringify( location ),
+        batteryDetails:JSON.stringify(batteryDetails),
+        triggerId:triggerId
 
       }
+
 
 
       try{
        
 
-        const response = await useHttpPost(`${BASE_URL}/user/submit_trigger_instance`,payload);
+        const response = await useHttpPost(`${BASE_URL}/trigger/submit_trigger_instance`,payload);
         const data = response.data;
+
 
         if( data.status === true ){
           console.log( "instance submited" ); // we would create a logger to keep track that the data was actually submitted

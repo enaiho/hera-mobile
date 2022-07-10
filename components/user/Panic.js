@@ -48,8 +48,6 @@ const Panic = ({ route,navigation }) => {
 
     useEffect(() => {
 
-
-
         (async () => {
 
 
@@ -97,8 +95,6 @@ const Panic = ({ route,navigation }) => {
 
         const location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
         setLocation(location);
-        
-
 
     }
     const dePanic = async() => {
