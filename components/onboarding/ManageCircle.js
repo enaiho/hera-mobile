@@ -292,7 +292,7 @@ const ManageCircle = ({ route, navigation }) => {
     const data = response.data;
 
     if (data.status === true) {
-
+      setModalVisible(false);
       return navigation.navigate("FinishReg", {
         screenWidth: screenWidth,
         screenHeight: screenHeight,

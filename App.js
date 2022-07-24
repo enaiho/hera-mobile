@@ -7,12 +7,13 @@ Bugsnag.start();
 */
 
 
-import React,{useState,useEffect} from 'react';
-import {StyleSheet, View, Dimensions} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
+import { Svg, Path } from 'react-native-svg';
 
 
 import Panic from './components/user/Panic';
@@ -31,6 +32,7 @@ import Settings from './components/user/Settings';
 import EditProfile from './components/user/EditProfile';
 import EmergencyContacts from './components/user/EmergencyContacts';
 import PanicEmergencyMessage from './components/user/PanicEmergencyMessage';
+import ManageDependents from './components/user/ManageDependents';
 import * as Location from 'expo-location';
 import * as Battery from 'expo-battery';
 import SolaceConfig from "./solace_config";
@@ -40,10 +42,10 @@ import SolaceConfig from "./solace_config";
 
 import AppLoading from 'expo-app-loading';
 import useFonts from './hooks/useFonts';
-import {useHttpGet,useHttpPost} from './hooks/useHttp';
+import { useHttpGet, useHttpPost } from './hooks/useHttp';
 
 
-const Stack  = createStackNavigator();
+const Stack = createStackNavigator();
 
 
 
@@ -62,19 +64,20 @@ export default function App() {
 
   const [IsReady, SetIsReady] = useState(false);
   const [IsAuth, SetAuth] = useState(false);
-  const [screenWidth,screenHeight] = [Dimensions.get("window").width,Dimensions.get("window").height];
+  const [screenWidth, screenHeight] = [Dimensions.get("window").width, Dimensions.get("window").height];
   const BASE_URL = SolaceConfig.SERVER_URL;
+  console.log({ IsAuth });
 
-   
-   useEffect(() => {
-    
-      Notifications.addNotificationReceivedListener(handleNotification);
-      // Notifications.addNotificationResponseReceivedListener(_handleNotificationResponse);
 
-  },[]);
+  useEffect(() => {
 
-  const handleNotification = async(notification) => {
-    
+    Notifications.addNotificationReceivedListener(handleNotification);
+    // Notifications.addNotificationResponseReceivedListener(_handleNotificationResponse);
+
+  }, []);
+
+  const handleNotification = async (notification) => {
+
 
     // console.log(`Request: ${notification}`);
 
@@ -93,9 +96,9 @@ export default function App() {
     const { trigger } = notification.request;
 
 
-    const { body,message } = trigger.remoteMessage.data;
+    const { body, message } = trigger.remoteMessage.data;
     const parseDataFromPN = JSON.parse(body);
-    const { email,triggerId,pushType } = parseDataFromPN;
+    const { email, triggerId, pushType } = parseDataFromPN;
 
 
     // const dataFromPN = JSON.parse(b)
@@ -104,47 +107,47 @@ export default function App() {
     // return;
 
 
-    if( pushType === "location" ){
+    if (pushType === "location") {
 
 
       // resend the instance to the user
-      
 
-      const location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
+
+      const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
       const batteryDetails = await Battery.getPowerStateAsync();
       const payload = {
 
         email: email,
-        location: JSON.stringify( location ),
-        batteryDetails:JSON.stringify(batteryDetails),
-        triggerId:triggerId
+        location: JSON.stringify(location),
+        batteryDetails: JSON.stringify(batteryDetails),
+        triggerId: triggerId
 
       }
 
 
 
-      try{
-       
+      try {
 
-        const response = await useHttpPost(`${BASE_URL}/trigger/submit_trigger_instance`,payload);
+
+        const response = await useHttpPost(`${BASE_URL}/trigger/submit_trigger_instance`, payload);
         const data = response.data;
 
 
-        if( data.status === true ){
-          console.log( "instance submited" ); // we would create a logger to keep track that the data was actually submitted
+        if (data.status === true) {
+          console.log("instance submited"); // we would create a logger to keep track that the data was actually submitted
         }
-        else{  console.log( data );  }
+        else { console.log(data); }
 
 
 
 
       }
-      catch(e){
+      catch (e) {
 
-        console.log( e.message );
+        console.log(e.message);
 
       }
-      
+
     }
 
   }
@@ -159,10 +162,10 @@ export default function App() {
 
 
 
-  const isUserAuthenticated = async() => {
+  const isUserAuthenticated = async () => {
 
-    const userdata_key = await AsyncStorage.getItem('userdata_key' );
-    if( userdata_key === "" || userdata_key === undefined || userdata_key === null ) return false;
+    const userdata_key = await AsyncStorage.getItem('userdata_key');
+    if (userdata_key === "" || userdata_key === undefined || userdata_key === null) return false;
 
     return false;
 
@@ -180,47 +183,50 @@ export default function App() {
   }
 
 
-  
+
   isUserAuthenticated().then(response => SetAuth(response));
 
 
-  if( IsAuth ){
+  if (IsAuth) {
 
     return (
 
-        <View style={styles.container}>
+      <View style={styles.container}>
 
-          <NavigationContainer>
-            <Stack.Navigator>
-
-
-
-
-              <Stack.Screen name="Panic" screenWidth={screenWidth} options={{ headerShown:false }}>
-                {(props) => <Panic {...props} />}
-              </Stack.Screen>
-
-              <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{headerShown:false}}></Stack.Screen>
-              <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{headerShown:false}}></Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}></Stack.Screen>
-              <Stack.Screen name="CreatePIN" component={CreatePIN} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="PanicActivate" component={PanicActivate} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="Safety" component={Safety} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{headerShown: false}}>
-                {(props) => <ManageCircle {...props} />}
-              </Stack.Screen>
-              <Stack.Screen name="Settings" component={Settings} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}></Stack.Screen>
-              <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{headerShown: false}}></Stack.Screen>
+        <NavigationContainer>
+          <Stack.Navigator>
 
 
 
-            </Stack.Navigator>
-          </NavigationContainer>
+
+            <Stack.Screen name="Panic" screenWidth={screenWidth} options={{ headerShown: false }}>
+              {(props) => <Panic {...props} />}
+            </Stack.Screen>
+
+            <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="CreatePIN" component={CreatePIN} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="PanicActivate" component={PanicActivate} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Safety" component={Safety} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{ headerShown: false }}>
+              {(props) => <ManageCircle {...props} />}
+            </Stack.Screen>
+            <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen
+              name="ManageDependents"
+              component={ManageDependents}
+              options={{ headerShown: false }}
+            />
+
+          </Stack.Navigator>
+        </NavigationContainer>
 
 
-        </View>
+      </View>
     );
 
   }
@@ -232,32 +238,37 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
 
-          <Stack.Screen name="Registration" options={{ headerShown:false }}>
+          <Stack.Screen name="Registration" options={{ headerShown: false }}>
             {(props) => <Registration {...props} />}
           </Stack.Screen>
 
-          <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{headerShown: false}}>
+          <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{ headerShown: false }}>
             {(props) => <ManageCircle {...props} />}
           </Stack.Screen>
 
 
 
-          <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{headerShown:false}}></Stack.Screen>
-          <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{headerShown:false}}></Stack.Screen>
-          <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}></Stack.Screen>
-          <Stack.Screen name="CreatePIN" component={CreatePIN} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="ConfirmPIN" component={ConfirmPIN} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="FinishReg" component={FinishReg} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="Panic" component={Panic} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="SignIn" component={SignIn} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="Settings" component={Settings} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="PanicActivate" component={PanicActivate} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="Safety" component={Safety} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{headerShown: false}}></Stack.Screen>
-          <Stack.Screen name="PanicEmergencyMessage" component={PanicEmergencyMessage} options={{headerShown: false}}></Stack.Screen>
+          <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="CreatePIN" component={CreatePIN} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="ConfirmPIN" component={ConfirmPIN} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="FinishReg" component={FinishReg} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="Panic" component={Panic} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="SignIn" component={SignIn} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="PanicActivate" component={PanicActivate} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="EditProfile" component={EditProfile} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="Safety" component={Safety} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="EmergencyContacts" component={EmergencyContacts} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen name="PanicEmergencyMessage" component={PanicEmergencyMessage} options={{ headerShown: false }}></Stack.Screen>
+          <Stack.Screen
+            name="ManageDependents"
+            component={ManageDependents}
+            options={{ headerShown: false }}
+          />
 
-         
+
         </Stack.Navigator>
       </NavigationContainer>
     </View>
@@ -271,5 +282,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
-  },
+  }
 });
