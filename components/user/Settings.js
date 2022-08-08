@@ -8,8 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Settings = ({ route,navigation }) => {
-
-    
     const {screenWidth,screenHeight,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
@@ -62,7 +60,7 @@ const Settings = ({ route,navigation }) => {
 
 
     const redirectScreen = (screen) => {
-        navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight }); 
+        navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight, user: route.params.user }); 
     }
 
     const MenuList = ({ props }) => {

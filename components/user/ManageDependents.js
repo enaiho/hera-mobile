@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { View, Text, Image, FlatList, StyleSheet, Modal, TouchableOpacity } from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import { View, Text, Image, FlatList, StyleSheet, Modal, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Svg, Path } from "react-native-svg";
+import * as request from "../../hooks/useHttp";
+import SolaceConfig from "../../solace_config";
 
 const ContactItem = ({ name, image, confirmRemoveContact }) => {
   return (
@@ -23,7 +25,7 @@ const ContactItem = ({ name, image, confirmRemoveContact }) => {
   )
 }
 
-const RemoveContactModal = ({ id, fullName, image, modalVisible, toggleModalVisible, removeContact }) => {
+const RemoveContactModal = ({ id, fullName, image, phoneNumber, modalVisible, toggleModalVisible, removeContact }) => {
   return (
     <Modal
       animationType="slide"
@@ -46,7 +48,7 @@ const RemoveContactModal = ({ id, fullName, image, modalVisible, toggleModalVisi
               <Image
                 style={styles.modalAvatar}
                 source={{
-                  uri: image,
+                  uri: image || "https://church-management-app.s3.us-east-2.amazonaws.com/1644404181914.png",
                 }}
               />
               <Svg style={styles.removeContactIcon} width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +64,7 @@ const RemoveContactModal = ({ id, fullName, image, modalVisible, toggleModalVisi
               <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalCancelBtn }} onPress={toggleModalVisible}>
                 <Text style={{ ...styles.modalBtnText, ...styles.modalCancelBtnText }}>CANCEL</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalRemoveBtn }} onPress={() => removeContact(id)}>
+              <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalRemoveBtn }} onPress={() => removeContact(phoneNumber)}>
                 <Text style={{ ...styles.modalBtnText, ...styles.modalRemoveBtnText }}>REMOVE</Text>
               </TouchableOpacity>
             </View>
@@ -73,28 +75,52 @@ const RemoveContactModal = ({ id, fullName, image, modalVisible, toggleModalVisi
   )
 }
 
-const ManageDependents = () => {
+const ManageDependents = ({ route: { params: { user } } }) => {
+  const initialRender = useRef(true);
+
+  const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
-  const [contacts, setContacts] = useState([
-    {
-      id: "1",
-      image: "https://church-management-app.s3.us-east-2.amazonaws.com/1644404181914.png",
-      fullName: "Natalie Cole"
-    },
-    {
-      id: "2",
-      image: "https://church-management-app.s3.us-east-2.amazonaws.com/1644404181914.png",
-      fullName: "Michael Okonkwo"
+  const [contacts, setContacts] = useState([]);
+
+  const fetchDependents = async () => {
+    const parsedUser = JSON.parse(user);
+    return await request.useHttpGet(`${SolaceConfig.SERVER_URL}/user/dependents/${parsedUser.phone}`);
+  };
+
+  const deleteDependent = async (phoneNumber) => {
+    const parsedUser = JSON.parse(user);
+    console.log({ phoneNumber, parsedUser });
+    return await request.useHttpDelete(`${SolaceConfig.SERVER_URL}/user/delete_dependent/${parsedUser.phone}/${phoneNumber}`);
+  };
+
+  useEffect(() => {
+    if (initialRender.current) {
+      setLoading(true);
+      fetchDependents().then(res => res.data).then(data => {
+        console.log({ data });
+        setContacts(data.dependents);
+        setLoading(false);
+      });
+      initialRender.current = false;
     }
-  ]);
+  }, [initialRender]);
 
   const toggleModalVisible = () => {
     setModalVisible(!modalVisible);
   }
 
-  const removeContact = (id) => {
-    setContacts(prevState => prevState.filter(contact => contact.id !== id));
+  const removeContact = async (phoneNumber) => {
+    setLoading(true);
+    deleteDependent(phoneNumber).then(
+      () => {
+        fetchDependents().then(res => res.data).then(data => {
+          console.log({ data });
+          setContacts(data.dependents);
+          setLoading(false);
+        });
+      }
+    );
     toggleModalVisible();
   }
 
@@ -117,20 +143,23 @@ const ManageDependents = () => {
           </Text>
         </View>
         <View>
-          <FlatList
-            data={contacts}
-            renderItem={({ item }) => (
-              <ContactItem
-                id={item.id}
-                name={item.fullName}
-                image={item.image}
-                confirmRemoveContact={() => {
-                  setSelectedItem(item);
-                  toggleModalVisible();
-                }}
-              />
-            )}
-          />
+          {loading ?
+            <ActivityIndicator size="large" color="#03C108" /> :
+            <FlatList
+              keyExtractor={item => item.userId}
+              data={contacts}
+              renderItem={({ item }) => (
+                <ContactItem
+                  id={item.userId}
+                  name={`${item.firstName} ${item.lastName}`}
+                  image={item.image || "https://church-management-app.s3.us-east-2.amazonaws.com/1644404181914.png"}
+                  confirmRemoveContact={() => {
+                    setSelectedItem(item);
+                    toggleModalVisible();
+                  }}
+                />
+              )}
+            />}
         </View>
       </View>
     </>
@@ -288,6 +317,11 @@ const styles = StyleSheet.create({
   },
   modalRemoveBtnText: {
     color: "#ffffff"
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
 
