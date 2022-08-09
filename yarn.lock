@@ -3140,6 +3140,11 @@
     "unimodules-task-manager-interface" "~7.1.0"
     "uuid" "^3.4.0"
 
+"expo-radio-button@^1.0.8":
+  "integrity" "sha512-sE+aCtq5/lL1Y24oVYMyGug0IPt0R3dXS6rSK2S+A+EFm6HYBj0ZKGA35ywSekS+/8lE9UwKS+ORwQlWsfXoUQ=="
+  "resolved" "https://registry.npmjs.org/expo-radio-button/-/expo-radio-button-1.0.8.tgz"
+  "version" "1.0.8"
+
 "expo-random@*", "expo-random@~12.1.1":
   "integrity" "sha512-ajB+Mwff9PdglsyLliaU4K9BtVwKvAVVI2hQhnvlS3QgsAhHf+jQVUfAysQJHuioF6ADMEsab/kRUy4Dy03aoQ=="
   "resolved" "https://registry.npmjs.org/expo-random/-/expo-random-12.1.2.tgz"

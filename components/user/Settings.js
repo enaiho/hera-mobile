@@ -8,8 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Settings = ({ route,navigation }) => {
-
-    
     const {screenWidth,screenHeight,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
@@ -39,6 +37,7 @@ const Settings = ({ route,navigation }) => {
         {
             id:2,
             name:"Manage Dependents",
+            navigationScreen: "ManageDependents",
             svgPathD: `<Svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg"><Path fill-rule="evenodd" clip-rule="evenodd" d="M11 4.66676C11 6.87584 9.20941 8.66678 7.00003 8.66678C4.79064 8.66678 3.00001 6.87584 3.00001 4.66676C3.00001 2.45769 4.79064 0.666748 7.00003 0.666748C9.20941 0.666748 11 2.45769 11 4.66676ZM0 15.5829C0 12.5923 2.42407 10.1673 5.41565 10.1673H8.58441C11.575 10.1673 14.0001 12.5923 14.0001 15.5829C14.0001 16.1829 13.5157 16.6673 12.9157 16.6673H1.08313C0.485002 16.6673 0 16.1829 0 15.5829ZM14.9719 10.6668H12.6641C14.1001 11.8449 15.0001 13.6074 15.0001 15.5824C15.0001 15.9824 14.8813 16.3512 14.6876 16.6668H19.0001C19.5532 16.6668 20.0001 16.2168 20.0001 15.6387C20.0001 12.9043 17.7626 10.6668 14.9719 10.6668ZM17 5.16677C17 7.10115 15.4343 8.66678 13.4999 8.66678C12.5249 8.66678 11.6468 8.26678 11.0127 7.62646C11.6271 6.79615 11.9999 5.77677 11.9999 4.66676C11.9999 3.83551 11.7749 3.06144 11.4149 2.37019C11.9987 1.9341 12.7152 1.66675 13.4999 1.66675C15.4343 1.66675 17 3.23238 17 5.16677Z" fill="#191414"/></Svg>`
         },
         {
@@ -61,7 +60,7 @@ const Settings = ({ route,navigation }) => {
 
 
     const redirectScreen = (screen) => {
-        navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight }); 
+        navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight, user: route.params.user }); 
     }
 
     const MenuList = ({ props }) => {
