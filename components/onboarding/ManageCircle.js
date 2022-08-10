@@ -286,6 +286,7 @@ const ManageCircle = ({ route, navigation }) => {
       user: user,
       contacts: JSON.stringify(selectedContacts),
       pushToken: pushToken
+      
     };
 
     const response = await axios.post(`${BASE_URL}/user/register`, payload);
@@ -362,41 +363,6 @@ const ManageCircle = ({ route, navigation }) => {
         finish={setUpUser}
       />
 
-      {/* <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-
-        <View style={styles.centeredView}>
-
-
-          <View style={styles.modalView}>
-
-
-            <TextInput
-              style={styles.txtSearchContact}
-              onChangeText={searchContact}
-              placeholder="Search Contact"
-
-            ></TextInput>
-
-            <Text></Text>
-
-            <FlatList
-              data={contactData}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-              extraData={refresh}
-              refreshing={true} />
-
-          </View>
-
-        </View>
-
-      </Modal> */}
 
       <Text style={styles.txtNumber}>Setup Emergency Contacts </Text>
       <View style={styles.semiContainer}>

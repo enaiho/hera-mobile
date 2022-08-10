@@ -98,7 +98,7 @@ const ManageDependents = ({ route: { params: { user } } }) => {
     if (initialRender.current) {
       setLoading(true);
       fetchDependents().then(res => res.data).then(data => {
-        console.log({ data });
+        //console.log({ data });
         setContacts(data.dependents);
         setLoading(false);
       });
@@ -115,7 +115,7 @@ const ManageDependents = ({ route: { params: { user } } }) => {
     deleteDependent(phoneNumber).then(
       () => {
         fetchDependents().then(res => res.data).then(data => {
-          console.log({ data });
+          //console.log({ data });
           setContacts(data.dependents);
           setLoading(false);
         });
@@ -138,9 +138,17 @@ const ManageDependents = ({ route: { params: { user } } }) => {
       <View style={styles.container}>
         <View style={styles.containerHeader}>
           <Text style={styles.containerHeaderTitle}>Dependents</Text>
-          <Text style={styles.containerHeaderText}>
+
+          {
+            contacts.length > 0 ?           
+            <Text style={styles.containerHeaderText}>
             These are the people who have added you as their emergency contacts
+          </Text> : <Text style={styles.containerHeaderText}>
+            No one has you as an emergency contact at the moment. 
           </Text>
+
+          }   
+
         </View>
         <View>
           {loading ?
