@@ -35,7 +35,6 @@ export default function PanicEmergencyMessage({ route, navigation}){
 
 
 
-
     const customNavigate = (navigateParams) => {
 
 
@@ -62,6 +61,7 @@ export default function PanicEmergencyMessage({ route, navigation}){
 
         if(  incidentId === "" ) {ToastAndroid.show("Please select an option. ", ToastAndroid.LONG); return; }
         else if( tag === "other" && incidentMessage === "" ) {ToastAndroid.show("Pleae type in the message to help us understand the incident. ", ToastAndroid.LONG); return; }
+        else if( incidentMessage != "" && tag === "" ){ ToastAndroid.show(`Please select the "Other Incident option" when typing the message. `,ToastAndroid.LONG ); return; }
 
 
         customNavigate( { incidentId:incidentId, incidentMessage:incidentMessage } );
