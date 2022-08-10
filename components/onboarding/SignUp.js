@@ -37,7 +37,6 @@ const SignUp = ({ route,navigation }) => {
 
 
     const registerUser = async () => {
-       
 
 
         if( fname === "" || fname === undefined ){
@@ -72,9 +71,14 @@ const SignUp = ({ route,navigation }) => {
 
         }
 
-
-        // setAnimating(true);
-
+        else if( !toggleCheckBox ){
+            setTimeout( () =>{
+                setErrorMessage("");
+            } ,5000) 
+            
+            setErrorMessage("Kindly select the checkbox to agree with the T/C ");               
+            return;
+        }
 
         const user = {
             email:email,
@@ -88,44 +92,12 @@ const SignUp = ({ route,navigation }) => {
         //push the data after I have selected my emergency contacts
 
 
-
         return navigation.navigate("ManageCircle",{
             screenWidth:screenWidth,
             screenHeight:screenHeight,
             user:JSON.stringify(user)
         });
 
-
-
-
-
-
-        // const response = await axios.post(`${BASE_URL}/user/register`,user);
-        // const data = response.data;
-
-
-        
-        // if( data.status === true ){
-
-
-        //     return navigation.navigate("ManageCircle",{
-        //         screenWidth:screenWidth,
-        //         screenHeight:screenHeight,
-        //         otp_code:data.otp_code,
-        //         user:JSON.stringify(user)
-        //     });
-
-
-        // }
-
-        
-        // setAnimating(false);
-        // setTimeout( () =>{
-        //     setErrorMessage("");
-        // } ,5000) 
-        
-        // setErrorMessage(data.message);               
-        // return;
 
     }
     
@@ -199,7 +171,6 @@ const SignUp = ({ route,navigation }) => {
                         <CheckBox
                             disabled={false}
                             value={toggleCheckBox}
-                            onValueChange={(newValue) => setToggleCheckBox(newValue)}
                             />
                             <Text style={styles.txtAgree}>I agree to Solace's Term of Service</Text>
                         

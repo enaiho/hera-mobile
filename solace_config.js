@@ -5,7 +5,7 @@
 
 
 const SolaceConfig = {
-  SERVER_URL: 'https://solace-dev.herokuapp.com',
+  SERVER_URL: 'http://192.168.100.52:5000',
 }
 
 export default SolaceConfig;
