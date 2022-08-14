@@ -175,6 +175,8 @@ const ManageDependents = ({ route: { params: { user } } }) => {
 };
 
 const styles = StyleSheet.create({
+
+
   header: {
     flexDirection: "row",
     padding: 20,
@@ -331,6 +333,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   }
+
+  
 });
 
 export default ManageDependents;

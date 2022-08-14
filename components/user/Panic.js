@@ -64,6 +64,22 @@ const Panic = ({ route,navigation }) => {
     },[])
 
 
+    const handlePanicError = (msg,noContact) => {
+
+
+        navigation.navigate("PanicError",{
+
+             screenWidth: screenWidth,
+             screenHeight: screenHeight,
+             user:user,
+             noContact:noContact,
+             msg:msg
+
+        });
+
+
+    }
+
 
 
     const triggerPanicAnimation = () => {
@@ -123,32 +139,41 @@ const Panic = ({ route,navigation }) => {
 
             const payload = { email:user_data.email,location:JSON.stringify(location), batteryDetails:JSON.stringify(batteryDetails) };
             const response = await useHttpPost(`${BASE_URL}/trigger/panic`,payload);
-            const { status,message,trigger_id,incidents } = response.data;
+            const { status,message,trigger_id,incidents,noContact } = response.data;
 
 
-            if( response.data.status === "sent" ) {
 
-                endPanicAnimation();
-                return navigation.navigate("PanicEmergencyMessage", {
-                    screenWidth: screenWidth,
-                    screenHeight: screenHeight,
-                    triggerId:trigger_id,
-                    incidents:incidents
-                });
-                
-            }
-            else{
-                ToastAndroid.show(`Error: We couldn't send the response trigger ${message.toUpperCase()}`, ToastAndroid.LONG );
-            }
+            endPanicAnimation();
+
+
+
+            console.log( noContact );
+            // return;
+
+
+
+
+
+            if( status !== "sent" ) return handlePanicError(message,noContact);
+
+
+            return navigation.navigate("PanicEmergencyMessage", {
+                screenWidth: screenWidth,
+                screenHeight: screenHeight,
+                triggerId:trigger_id,
+                incidents:incidents
+            });
+
+
+            
 
         }
         catch(e){
-            ToastAndroid.show( `Exception Error: ${e.message.toString().toUpperCase()}`,ToastAndroid.LONG );
+
             endPanicAnimation();
+            handlePanicError();
+
         }
-
-        endPanicAnimation();
-
 
     }
 

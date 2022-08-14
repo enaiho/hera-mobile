@@ -26,7 +26,7 @@ const ContactItem = ({ name = "", id, hoveredContact, showCloseBtn, isFirstItem,
         <Text style={styles.contactName}>{firstName}</Text>
         <Text style={styles.contactName}>{lastName}</Text>
       </View>
-    </TouchableOpacity >
+    </TouchableOpacity>
   )
 }
 

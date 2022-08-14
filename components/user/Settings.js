@@ -8,13 +8,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Settings = ({ route,navigation }) => {
+
+    
     const {screenWidth,screenHeight,user} = route.params;
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
     const [refresh,setRefresh] = useState(false);
 
 
-    console.log( user );
+    // console.log( user );
 
 
     const user_data = JSON.parse( user );

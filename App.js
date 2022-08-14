@@ -33,6 +33,7 @@ import EditProfile from './components/user/EditProfile';
 import EmergencyContacts from './components/user/EmergencyContacts';
 import PanicEmergencyMessage from './components/user/PanicEmergencyMessage';
 import ManageDependents from './components/user/ManageDependents';
+import PanicError from './components/user/PanicError';
 import * as Location from 'expo-location';
 import * as Battery from 'expo-battery';
 import SolaceConfig from "./solace_config";
@@ -221,6 +222,11 @@ export default function App() {
               component={ManageDependents}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="PanicError"
+              component={PanicError}
+              options={{ headerShown: false }}
+            />
 
           </Stack.Navigator>
         </NavigationContainer>
@@ -265,6 +271,11 @@ export default function App() {
           <Stack.Screen
             name="ManageDependents"
             component={ManageDependents}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PanicError"
+            component={PanicError}
             options={{ headerShown: false }}
           />
 
