@@ -111,6 +111,7 @@ const ManageDependents = ({ route: { params: { user } } }) => {
   }
 
   const removeContact = async (phoneNumber) => {
+    
     setLoading(true);
     deleteDependent(phoneNumber).then(
       () => {
@@ -122,6 +123,9 @@ const ManageDependents = ({ route: { params: { user } } }) => {
       }
     );
     toggleModalVisible();
+
+
+    
   }
 
   return (
@@ -175,6 +179,8 @@ const ManageDependents = ({ route: { params: { user } } }) => {
 };
 
 const styles = StyleSheet.create({
+
+
   header: {
     flexDirection: "row",
     padding: 20,
@@ -331,6 +337,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   }
+
+
 });
 
 export default ManageDependents;

@@ -2,6 +2,7 @@
 // 192.168.100.11.
 // https://hera-dev.herokuapp.com
 // https://solace-dev.herokuapp.com
+// http://192.168.100.52:5000
 
 
 const SolaceConfig = {
@@ -9,3 +10,4 @@ const SolaceConfig = {
 }
 
 export default SolaceConfig;
+
