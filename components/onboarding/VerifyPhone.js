@@ -1,4 +1,4 @@
-import React,{useState,useRef,useEffect} from "react";
+import React,{useState,useRef,useEffect,useContext} from "react";
 import { StyleSheet,View,Text,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -6,6 +6,7 @@ import axios from "axios";
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import {useHttpPost} from '../../hooks/useHttp';
+import { EmergencyContactContext } from '../../context/EmergencyContactContext';
 
 
 
@@ -38,6 +39,11 @@ const VerifyPhone = ({ route,navigation }) => {
     for (let index = 0; index < length; index++) {
         mapRef.push(useRef())
     }
+
+
+    const isValid = useContext( EmergencyContactContext );
+    console.log(isValid);
+
 
 
     const verifyOTP = async() => {

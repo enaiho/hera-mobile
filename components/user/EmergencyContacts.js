@@ -25,7 +25,7 @@ import { TextInput } from "react-native-gesture-handler";
 import axios from "axios";
 import * as Contacts from 'expo-contacts';
 import Checkbox from 'expo-checkbox';
-import { useHttpPost,useHttpGet } from '../../hooks/useHttp';
+import { useHttpPost,useHttpGet,useHttpPatch } from '../../hooks/useHttp';
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import SelectContacts from "../onboarding/SelectContacts";
@@ -36,12 +36,13 @@ import SelectContacts from "../onboarding/SelectContacts";
 const EmergencyContacts = ({ route, navigation }) => {
 
 
-    // const initialRender = useRef( true );
+    const initialRender = useRef( true );
 
 
     const [code, verifyCode] = useState(null);
     const [isDisabled, toggleButton] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [removeLoading, setRemoveLoading] = useState(false);
     const [status, setStatus] = useState(null);
     const { screenWidth, screenHeight, user } = route.params;
 
@@ -49,6 +50,7 @@ const EmergencyContacts = ({ route, navigation }) => {
     const styleProps = { screenWidth: screenWidth, screenHeight: screenHeight,user:user };
     const styles = _styles(styleProps);
     const BASE_URL = SolaceConfig.SERVER_URL;
+
 
 
     const [contactData, setContactData] = useState(null);
@@ -62,24 +64,17 @@ const EmergencyContacts = ({ route, navigation }) => {
 
 
 
-
-    const fetchEmergencyContacts = async() => {
-        
-
-        const { email } = JSON.parse(user);
-        const response = await useHttpGet(`${BASE_URL}/user/get_contacts/${email}`);
-        const emergency_contacts = response.data;
-
-        return emergency_contacts;
-
-    }
-
+    const parsedUser = JSON.parse(user);
+    const { email } = parsedUser;
 
 
     useEffect(() => {
 
 
         (async () => {
+
+            if( initialRender.current ){
+
             const { status } = await Contacts.requestPermissionsAsync();
             if (status === 'granted') {
 
@@ -94,101 +89,80 @@ const EmergencyContacts = ({ route, navigation }) => {
                     setPreContactData(data);
                     setContactData(data);
                 }
+            }
 
+            setLoading(true);
+            const {message,contacts} = await fetchEmergencyContacts();
+            setContacts(contacts);
+            setLoading(false);
 
             }
 
-            // get the emergency contacts
-
-
-            if( !modalVisible ){
-
-                const {message,contacts} = await fetchEmergencyContacts();
-                setContacts(contacts);
-
-                // console.log( emergency_contacts );
-                // console.log( "emergency contacts" );
-
-            }
-
+            initialRender.current = false;
 
         })();
 
-
-    }, [modalVisible]);
-
+    }, [initialRender]);
 
 
-    // console.log( contacts );
+    const fetchEmergencyContacts = async() => {
+        
+
+        const { email } = JSON.parse(user);
+        const response = await useHttpGet(`${BASE_URL}/user/get_contacts/${email}`);
+        const emergency_contacts = response.data;
+
+        return emergency_contacts;
+
+    }
+
+    const deleteEmergencyContact = async(lookupKey) => {
+
+
+        const payload = { lookupKey: lookupKey };
+        const response = await useHttpPatch(`${BASE_URL}/user/delete_contact/${email}`,payload  );
+        const { data } = response;
+        const { status,message } = data;
+
+        return message;
+
+    }
 
 
     var DATA = preContactData;
 
 
-    const removeContact = (id) => {
+    const removeContact = (lookupKey) => {
 
+        setLoading(true);
+        toggleModalVisible();
 
-        for (let i = 0; i < selectedContacts.length; i++) {
+        deleteEmergencyContact(lookupKey).then(
 
-            if (selectedContacts[i].id === id) {
+          (res) => {
 
-                selectedContacts[i] = undefined;
-                break;
+            ToastAndroid.show(res, ToastAndroid.LONG);
+            fetchEmergencyContacts().then( res => {
 
-            }
+                setContacts(res.contacts);
+                setLoading(false);
 
-        }
+            });
+            
+          
+          }
 
-        setSelectedContacts(selectedContacts.filter((contact) => contact !== undefined));
+        ).catch( (err) => {
+            
+            setLoading(false);
+            ToastAndroid.show(err.message, ToastAndroid.LONG);
+ 
+
+        });
+        
     }
 
     const changeItem = (id) => {
-
-
-        let selectedId = "";
-        let tempContactData = contactData.map((contact) => {
-
-            if (contact.lookupKey === id) {
-
-                if (!contact.checked) {
-
-                    contact.checked = true;
-                    selectedContacts.push({ id: contact.lookupKey, name: contact.name, phone: contact.phoneNumbers[0].number });
-
-                }
-                else {
-                    contact.checked = false;
-                    selectedId = id;
-                }
-
-                return contact;
-
-            }
-
-            return contact;
-        });
-
-
-        if (selectedId != "") {
-
-
-            for (let i = 0; i < selectedContacts.length; i++) {
-
-                if (selectedContacts[i].id === selectedId) {
-
-                    selectedContacts[i] = undefined;
-                    selectedId = "";
-                    break;
-
-                }
-
-            }
-
-        }
-
-        setSelectedContacts(selectedContacts.filter((contact) => contact !== undefined));
-        setContactData(tempContactData);
-        setRefresh(true);
     }
 
     const isContactSelected = (contacts, lookupKey) => {
@@ -247,8 +221,10 @@ const EmergencyContacts = ({ route, navigation }) => {
       )
     }
 
-    const RemoveContactModal = ({ id, firstName, lastName, image, phoneNumber, modalVisible, toggleModalVisible, removeContact }) => {
+    const RemoveContactModal = ({ id, firstName, lastName, image, phoneNumber, lookupKey, modalVisible, toggleModalVisible, removeContact }) => {
       
+
+
       const fullName = `${firstName} ${lastName}`;
       return (
         <Modal
@@ -288,9 +264,13 @@ const EmergencyContacts = ({ route, navigation }) => {
                   <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalCancelBtn }} onPress={toggleModalVisible}>
                     <Text style={{ ...styles.modalBtnText, ...styles.modalCancelBtnText }}>CANCEL</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalRemoveBtn }} onPress={() => removeContact(phoneNumber)}>
-                    <Text style={{ ...styles.modalBtnText, ...styles.modalRemoveBtnText }}>REMOVE</Text>
+                  
+
+                  <TouchableOpacity style={{ ...styles.modalBtn, ...styles.modalRemoveBtn }} onPress={() => removeContact(lookupKey)}>
+                    <Text style={{ ...styles.modalBtnText, ...styles.modalRemoveBtnText }}> REMOVE </Text>
                   </TouchableOpacity>
+
+
                 </View>
               </View>
             </View>
@@ -332,15 +312,20 @@ const EmergencyContacts = ({ route, navigation }) => {
         ToastAndroid.show(message, ToastAndroid.LONG);
 
 
-    }
+        fetchEmergencyContacts().then( res => {
 
+            setContacts(res.contacts);
+            setLoading(false);
+
+        });
+
+    }
 
     const SelectedItem = ({ props }) => {
 
         return (
 
             <View style={styles.item}>
-
 
                 <View>
                     <Text>{props.name} </Text>
@@ -354,12 +339,10 @@ const EmergencyContacts = ({ route, navigation }) => {
                     />
                 </View>
 
-
             </View>
         );
 
     }
-
 
     const renderItem = ({ item }) => <Item props={item} />;
     const renderSelectedContact = ({ item }) => <SelectedItem props={item} />;

@@ -1,6 +1,6 @@
 'use strict'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import {
     StyleSheet,
     Text,
@@ -29,9 +29,11 @@ import Constants from 'expo-constants';
 import * as Battery from 'expo-battery';
 import * as Notifications from 'expo-notifications';
 import SolaceConfig from "../../solace_config";
+import {EmergencyContactContext} from "../../context/EmergencyContactContext";
 
 
 const Panic = ({ route,navigation }) => {
+
 
 
     const { screenWidth,screenHeight,user } = route.params;
@@ -44,6 +46,14 @@ const Panic = ({ route,navigation }) => {
     const [errorMsg, setErrorMsg] = useState(null);
     const [triggerId, setTriggerId] = useState(null);
     const BASE_URL = SolaceConfig.SERVER_URL;
+
+
+
+    const isValid = useContext( EmergencyContactContext );
+    // console.log( isValid );
+
+    
+
 
 
     useEffect(() => {
