@@ -5,6 +5,8 @@ import Svg, {
 import { StyleSheet,View,Text,Image,FlatList,Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FlashEmergencyContact } from "./FlashEmergencyContact";
+
 
 
 const Settings = ({ route,navigation }) => {
@@ -128,54 +130,65 @@ const Settings = ({ route,navigation }) => {
     return (
 
 
-        <View style={styles.container}>
+        <>
+
+            <View style={styles.container}>
 
 
-            <View style={styles.accountSettings}>
+                <View style={styles.accountSettings}>
 
-                <Text style={styles.txtNumber}>Account Settings </Text>
-                    <Image
-                      style={styles.imgProfile}
-                      source={require('../../assets/images/avatar.jpeg')}
+                    <Text style={styles.txtNumber}>Account Settings </Text>
+                        <Image
+                          style={styles.imgProfile}
+                          source={require('../../assets/images/avatar.jpeg')}
+                        />
+
+                      <Text style={styles.profileName}>{fname} {lname}</Text>
+
+
+                      <TouchableOpacity
+                        style={ styles.btnEditProfile }
+                        onPress={ () => navigation.navigate("EditProfile", { screenWidth:screenWidth,screenHeight:screenHeight,user:user }) }>
+
+                        <Text style={ styles.btnText }>Edit Profile</Text>
+
+                      </TouchableOpacity>
+
+
+                    <FlatList
+
+                        data={menuData} 
+                        renderItem={renderMenuItem} 
+                        keyExtractor={item => item.id} 
+                        extraData={refresh}
+                        refreshing={true}
+                        style={styles.settingsMenu}
+
                     />
 
-                  <Text style={styles.profileName}>{fname} {lname}</Text>
 
 
-                  <TouchableOpacity
-                    style={ styles.btnEditProfile }
-                    onPress={ () => navigation.navigate("EditProfile", { screenWidth:screenWidth,screenHeight:screenHeight,user:user }) }>
+                     <View style={styles.semiContainer}>
 
-                    <Text style={ styles.btnText }>Edit Profile</Text>
+                         <TouchableOpacity
+                            style={ styles.btn }
+                            onPress = { logoutPrompt }>
+                            <Text style={ styles.btnTxtLogout }>Log out</Text>
+                        </TouchableOpacity>
 
-                  </TouchableOpacity>
+                    </View>
+                </View>           
+            </View>
 
+            <FlashEmergencyContact 
+                navigation={navigation}
+                screenWidth={screenWidth}
+                screenHeight={screenHeight}
+                user={user}
 
-                <FlatList
+             />
 
-                    data={menuData} 
-                    renderItem={renderMenuItem} 
-                    keyExtractor={item => item.id} 
-                    extraData={refresh}
-                    refreshing={true}
-                    style={styles.settingsMenu}
-
-                />
-
-
-
-                 <View style={styles.semiContainer}>
-
-                     <TouchableOpacity
-                        style={ styles.btn }
-                        onPress = { logoutPrompt }>
-                        <Text style={ styles.btnTxtLogout }>Log out</Text>
-                    </TouchableOpacity>
-
-                </View>
-            </View>           
-
-        </View>
+         </>
 
 
     )
@@ -266,7 +279,6 @@ export const _styles = (props) =>  StyleSheet.create({
         borderColor:"#90979E",
         left:12,
 
-
     },
     btnTxtMenu:{
 
@@ -274,8 +286,6 @@ export const _styles = (props) =>  StyleSheet.create({
         fontSize:14,
         color:"#191414",
         bottom:15
-
-
         
     },
     menuItem:{

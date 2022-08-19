@@ -84,15 +84,6 @@ export default function PanicError({ route, navigation}){
                     </TouchableOpacity>
                 }
 
-                 <TouchableOpacity
-                    style={ [styles.btnSafety,styles.btnPanicScreen ] }
-                    onPress={navigateToPanic}>
-
-                    <View style={styles.safeBtn}>
-                        <Text style={ styles.btnText }>Panic Screen</Text>
-                    </View>
-
-                </TouchableOpacity>
 
             </View>
 

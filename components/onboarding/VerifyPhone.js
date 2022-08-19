@@ -1,4 +1,4 @@
-import React,{useState,useRef,useEffect,useContext} from "react";
+import React,{useState,useRef,useContext} from "react";
 import { StyleSheet,View,Text,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -6,7 +6,7 @@ import axios from "axios";
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import {useHttpPost} from '../../hooks/useHttp';
-import { EmergencyContactContext } from '../../context/EmergencyContactContext';
+import { EmergencyContactContext,EmergencyContactContextUpdate } from '../../context/EmergencyContactContext';
 
 
 
@@ -18,16 +18,14 @@ const VerifyPhone = ({ route,navigation }) => {
     const [isDisabled, toggleButton] = useState(false);
     const [errMessage,setErrorMessage] = useState(null);
     const {screenWidth,screenHeight,phone,exist,message,otp_code} = route.params;
-    console.log({otp_code})
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
     const BASE_URL = SolaceConfig.SERVER_URL;
     const contents = ["1_","2_","3_","4_"];
 
 
-    useEffect(() => {
-       // console.log("changed new");
-    });
+    console.log({otp_code});
+    
 
 
     const pin = [];
@@ -41,16 +39,14 @@ const VerifyPhone = ({ route,navigation }) => {
     }
 
 
-    const isValid = useContext( EmergencyContactContext );
-    console.log(isValid);
 
+
+    const setValid = useContext( EmergencyContactContextUpdate );
 
 
     const verifyOTP = async() => {
 
-
         const pin_val = pin.join("");
-
 
         if( pin_val === "" || pin_val == undefined || pin.length < 4 ) { 
             ToastAndroid.show("OTP value not complete. Ensure you type in all characters. ", ToastAndroid.SHORT);      
@@ -74,11 +70,16 @@ const VerifyPhone = ({ route,navigation }) => {
 
             const payload = {"phone":phone};
             const response = await useHttpPost(`${BASE_URL}/user/get_rec_phone`,payload);
-            const { message,authenticated,user } = response.data;
+            const { message,authenticated,user,contact_status } = response.data;
+
+
+
+            setValid(contact_status);
 
 
             if( authenticated === false ) return navigation.navigate("SignUp",{ screenWidth:screenWidth,screenHeight:screenHeight,phone:phone,otp_code:otp_code });
             
+
             try {
 
                 await AsyncStorage.setItem('userdata_key',JSON.stringify(user) ); // the user object coming has already been stringified.
@@ -96,7 +97,6 @@ const VerifyPhone = ({ route,navigation }) => {
         }
 
     }
-
 
     return (
 

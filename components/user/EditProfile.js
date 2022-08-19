@@ -7,6 +7,7 @@ import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import SelectDropdown from 'react-native-select-dropdown';
 import {useHttpPut,useHttpPost} from '../../hooks/useHttp';
+import { FlashEmergencyContact } from "./FlashEmergencyContact";
 
 
 
@@ -113,151 +114,168 @@ const EditProfile = ({ route,navigation }) => {
     return (
 
 
-        <View style={styles.container}>
+        <>
 
-            
-            <View style={styles.viewWelcome}>
+            <View style={styles.container}>
+
                 
+                <View style={styles.viewWelcome}>
+                    
 
-                <Text style={styles.txtNew}>Edit Profile </Text>
-
-                <Text></Text>
-
-                <View style={styles.semiContainer}>
-
-
-                    <TextInput 
-                        style={[styles.txtInput,styles.txtFname]}
-                        onChangeText={onChangeFname}
-                        keyboardType="ascii-capable"
-                        placeholder="First Name"
-                        value={fname}
-                        
-
-                        
-                    />
+                    <Text style={styles.txtNew}>Edit Profile </Text>
 
                     <Text></Text>
 
-                    <TextInput 
-                        style={[styles.txtInput,styles.txtFname]}
-                        onChangeText={onChangeLname}
-                        keyboardType="ascii-capable"
-                        placeholder="Last Name"
-                        value={lname}
-                        
-                    />
-
-                    <Text></Text>
+                    <View style={styles.semiContainer}>
 
 
+                        <TextInput 
+                            style={[styles.txtInput,styles.txtFname]}
+                            onChangeText={onChangeFname}
+                            keyboardType="ascii-capable"
+                            placeholder="First Name"
+                            value={fname}
+                            
 
-                    <SelectDropdown
-                        data={genderData}
-                        defaultButtonText={genderDefaultText}
-                        buttonStyle={ styles.genderInput }
-                        buttonTextStyle = { styles.genderInputTxt }
-                        onSelect={(selectedItem, index) => {
-                            onChangeGender(selectedItem);
-                        }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            return selectedItem
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return item
-                        }}
-                    />
-
-                    <Text></Text>
-
-
-                    <TextInput 
-                        style={[styles.txtInput,styles.txtEmail]}
-                        onChangeText={onChangeEmail}
-                        keyboardType="email-address"
-                        placeholder="Email address"
-                        value={email}
-                        
+                            
                         />
-                    
-                    <Text></Text>
 
-                    <SelectDropdown
-                        data={bloodGroupData}
-                        defaultButtonText={bgDefaultText}
-                        buttonStyle={ styles.genderInput }
-                        buttonTextStyle = { styles.genderInputTxt }
-                        onSelect={(selectedItem, index) => {
-                            onChangeBloodGroup(selectedItem);
-                        }}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                            // text represented after item is selected
-                            // if data array is an array of objects then return selectedItem.property to render after item is selected
-                            return selectedItem
-                        }}
-                        rowTextForSelection={(item, index) => {
-                            // text represented for each item in dropdown
-                            // if data array is an array of objects then return item.property to represent item in dropdown
-                            return item
-                        }}
-                    />
+                        <Text></Text>
 
-                    <Text></Text>
+                        <TextInput 
+                            style={[styles.txtInput,styles.txtFname]}
+                            onChangeText={onChangeLname}
+                            keyboardType="ascii-capable"
+                            placeholder="Last Name"
+                            value={lname}
+                            
+                        />
 
-                    <Text style={styles.txtEmergencyHeader}>Emergency Message</Text>
-                    <Text></Text>
-                    <Text style={styles.txtEmergencyBody}>When you’re in an emergency, Solace will send this preset message to your emergency contacts. </Text>
-                    <Text></Text>
+                        <Text></Text>
 
 
-                    <TextInput
 
-                        style={[styles.txtInput,styles.txtEmail]}
-                        onChangeText={setMessage}
-                        keyboardType="email-address"
-                        placeholder="Emergency message"
-                        value={message}
-                        multiline = {true}
-                        numberOfLines = {10}
+                        <SelectDropdown
+                            data={genderData}
+                            defaultButtonText={genderDefaultText}
+                            buttonStyle={ styles.genderInput }
+                            buttonTextStyle = { styles.genderInputTxt }
+                            onSelect={(selectedItem, index) => {
+                                onChangeGender(selectedItem);
+                            }}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                // text represented after item is selected
+                                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                return selectedItem
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                // text represented for each item in dropdown
+                                // if data array is an array of objects then return item.property to represent item in dropdown
+                                return item
+                            }}
+                        />
+
+                        <Text></Text>
+
+
+                        <TextInput 
+                            style={[styles.txtInput,styles.txtEmail]}
+                            onChangeText={onChangeEmail}
+                            keyboardType="email-address"
+                            placeholder="Email address"
+                            value={email}
+                            
+                            />
                         
-                    />
+                        <Text></Text>
 
-                    
-                </View>
+                        <SelectDropdown
+                            data={bloodGroupData}
+                            defaultButtonText={bgDefaultText}
+                            buttonStyle={ styles.genderInput }
+                            buttonTextStyle = { styles.genderInputTxt }
+                            onSelect={(selectedItem, index) => {
+                                onChangeBloodGroup(selectedItem);
+                            }}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                // text represented after item is selected
+                                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                return selectedItem
+                            }}
+                            rowTextForSelection={(item, index) => {
+                                // text represented for each item in dropdown
+                                // if data array is an array of objects then return item.property to represent item in dropdown
+                                return item
+                            }}
+                        />
 
-               
-                <Text></Text>
-                <Text></Text>
-                <Text></Text>
+                        <Text></Text>
 
-                 <View>
+                        <Text style={styles.txtEmergencyHeader}>Emergency Message</Text>
+                        <Text></Text>
+                        <Text style={styles.txtEmergencyBody}>When you’re in an emergency, Solace will send this preset message to your emergency contacts. </Text>
+                        <Text></Text>
 
-                    <TouchableOpacity 
-                        style={ styles.btn }
-                        disabled={ isDisabled }
-                        onPress = { saveProfileChanges }>
-                        <Text style={ styles.btnText }>Save Changes</Text>
-                    </TouchableOpacity>                
 
+                        <TextInput
+
+                            style={[styles.txtInput,styles.txtEmail]}
+                            onChangeText={setMessage}
+                            keyboardType="email-address"
+                            placeholder="Emergency message"
+                            value={message}
+                            multiline = {true}
+                            numberOfLines = {10}
+                            
+                        />
+
+                        
+                    </View>
+
+                   
                     <Text></Text>
-                    <ActivityIndicator 
-                        size="small" 
-                        color="#0000ff"
-                        animating={animating} 
 
-                    />
 
+                     <View>
+
+                        <TouchableOpacity 
+                            style={ styles.btn }
+                            disabled={ isDisabled }
+                            onPress = { saveProfileChanges }>
+                            <Text style={ styles.btnText }>Save Changes</Text>
+                        </TouchableOpacity>                
+
+                        <Text></Text>
+                        <ActivityIndicator 
+                            size="small" 
+                            color="#0000ff"
+                            animating={animating} 
+
+                        />
+
+
+                    </View>
 
                 </View>
 
             </View>
 
 
-        </View>
+            <Text></Text>
+            <Text></Text>
+            <Text></Text>
+
+
+            <FlashEmergencyContact 
+                navigation={navigation}
+                screenWidth={screenWidth}
+                screenHeight={screenHeight}
+                user={user}
+
+             />
+
+
+         </>
 
     )
 };
