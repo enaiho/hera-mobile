@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect,useRef,useContext } from "react";
 import {
     StyleSheet,
     View,
@@ -29,8 +29,8 @@ import { useHttpPost,useHttpGet,useHttpPatch } from '../../hooks/useHttp';
 import Constants from 'expo-constants';
 import SolaceConfig from "../../solace_config";
 import SelectContacts from "../onboarding/SelectContacts";
-
-
+import {EmergencyContactContext,EmergencyContactContextUpdate} from "../../context/EmergencyContactContext";
+import { FlashEmergencyContact } from "./FlashEmergencyContact";
 
 
 const EmergencyContacts = ({ route, navigation }) => {
@@ -61,6 +61,9 @@ const EmergencyContacts = ({ route, navigation }) => {
     const [modalVisibleContact, setModalVisibleContact] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const [selectedContacts, setSelectedContacts] = useState([]);
+
+
+    const setValid = useContext(EmergencyContactContextUpdate);
 
 
 
@@ -104,20 +107,15 @@ const EmergencyContacts = ({ route, navigation }) => {
 
     }, [initialRender]);
 
-
     const fetchEmergencyContacts = async() => {
         
-
         const { email } = JSON.parse(user);
         const response = await useHttpGet(`${BASE_URL}/user/get_contacts/${email}`);
         const emergency_contacts = response.data;
 
         return emergency_contacts;
-
     }
-
     const deleteEmergencyContact = async(lookupKey) => {
-
 
         const payload = { lookupKey: lookupKey };
         const response = await useHttpPatch(`${BASE_URL}/user/delete_contact/${email}`,payload  );
@@ -125,12 +123,9 @@ const EmergencyContacts = ({ route, navigation }) => {
         const { status,message } = data;
 
         return message;
-
     }
 
-
     var DATA = preContactData;
-
 
     const removeContact = (lookupKey) => {
 
@@ -144,11 +139,13 @@ const EmergencyContacts = ({ route, navigation }) => {
             ToastAndroid.show(res, ToastAndroid.LONG);
             fetchEmergencyContacts().then( res => {
 
+                if(  res.contacts.length === 0 || res.contacts === undefined  ) setValid(false);
+
                 setContacts(res.contacts);
                 setLoading(false);
 
-            });
-            
+
+            });            
           
           }
 
@@ -283,7 +280,6 @@ const EmergencyContacts = ({ route, navigation }) => {
         setModalVisibleContact(!modalVisibleContact);
     }
 
-
     const addEmergencyContacts = async () => {
 
 
@@ -307,8 +303,10 @@ const EmergencyContacts = ({ route, navigation }) => {
         const { message,status } = response.data;
 
         if( !status ) return;
+        
 
         setModalVisible(false);
+        setValid(true);
         ToastAndroid.show(message, ToastAndroid.LONG);
 
 
@@ -428,7 +426,20 @@ const EmergencyContacts = ({ route, navigation }) => {
               )}
             />}
         </View>
+
+
       </View>
+
+                <FlashEmergencyContact 
+        navigation={navigation}
+        screenWidth={screenWidth}
+        screenHeight={screenHeight}
+        user={user}
+
+     />
+
+
+
 
       </>
 

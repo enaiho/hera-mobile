@@ -1,4 +1,4 @@
-import React,{useState,useRef} from "react";
+import React,{useState,useRef,useContext} from "react";
 import { StyleSheet,View,Text, ActivityIndicator,Alert,ToastAndroid } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import axios from "axios";
@@ -6,7 +6,7 @@ import {useHttpGet,useHttpPost} from '../../hooks/useHttp';
 import Constants from 'expo-constants';
 import PhoneInput from "react-native-phone-number-input";
 import SolaceConfig from "../../solace_config";
-import { EmergencyContactContext } from '../../context/EmergencyContactContext';
+import { EmergencyContactContext,EmergencyContactContextUpdate } from '../../context/EmergencyContactContext';
 
 
 
@@ -28,14 +28,13 @@ const PhoneNumberEntry = ({ route,navigation }) => {
     const phoneInput = useRef(null);
     const [value, setValue] = useState("");
     const [errMsg,setErrMsg] = useState("");
-    const [isValid,setValid] = useState(false);
-   
-
 
 
 
 
     const verifyPhone = async () => {
+
+
        
         try{
 
@@ -65,9 +64,6 @@ const PhoneNumberEntry = ({ route,navigation }) => {
             if( otp_sent ){
 
 
-                // setValid(true);
-
-
                 return navigation.navigate("VerifyPhone", {
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
@@ -94,66 +90,66 @@ const PhoneNumberEntry = ({ route,navigation }) => {
     return (
 
         <>
-            <EmergencyContactContext.Provider value={isValid}>
-                <View style={styles.container}>
 
+            <View style={styles.container}>
+
+                
+                <View style={styles.grpNumber}>
+
+                
                     
-                    <View style={styles.grpNumber}>
-
-                    
-                        
-                        <Text style={styles.txtNumber}>What's your number? </Text>
-                        <Text style={styles.txtSub}>We’ll text a code to verify your phone</Text>
-                        <Text></Text>
-                        <Text></Text>
+                    <Text style={styles.txtNumber}>What's your number? </Text>
+                    <Text style={styles.txtSub}>We’ll text a code to verify your phone</Text>
+                    <Text></Text>
+                    <Text></Text>
 
 
-                         <PhoneInput
-                            ref={phoneInput}
-                            defaultValue={value}
-                            defaultCode="NG"
-                            layout="first"
-                            containerStyle={styles.phoneInput}
-                            textInputStyle={styles.txtPhoneInput}
-                            codeTextStyle={styles.txtPhoneInput}
-                            onChangeText={onChangeNumber}
-                            onChangeFormattedText={onChangePhoneFormatted}
-                            withDarkTheme
-                            autoFocus
-                            textInputProps={{ maxLength:10 }} 
-                          />
+                     <PhoneInput
+                        ref={phoneInput}
+                        defaultValue={value}
+                        defaultCode="NG"
+                        layout="first"
+                        containerStyle={styles.phoneInput}
+                        textInputStyle={styles.txtPhoneInput}
+                        codeTextStyle={styles.txtPhoneInput}
+                        onChangeText={onChangeNumber}
+                        onChangeFormattedText={onChangePhoneFormatted}
+                        withDarkTheme
+                        autoFocus
+                        textInputProps={{ maxLength:10 }} 
+                      />
 
 
-                          <Text style={styles.errorMessage}>{errMsg}</Text>
+                      <Text style={styles.errorMessage}>{errMsg}</Text>
 
 
-                    </View>
-                    
-
-                    <View style={styles.semiContainer}>
-                        
-
-
-                        <TouchableOpacity 
-                            style={ styles.btn }
-                            onPress={ verifyPhone }
-                            disabled={ isDisabled }>
-                            <Text style={ styles.btnText }>Next</Text>
-
-                        </TouchableOpacity>
-
-
-                        <ActivityIndicator 
-                            size="small" 
-                            color="#0000ff"
-                            animating={animating} 
-
-                        />
-
-
-                    </View>
                 </View>
-            </EmergencyContactContext.Provider>
+                
+
+                <View style={styles.semiContainer}>
+                    
+
+
+                    <TouchableOpacity 
+                        style={ styles.btn }
+                        onPress={ verifyPhone }
+                        disabled={ isDisabled }>
+                        <Text style={ styles.btnText }>Next</Text>
+
+                    </TouchableOpacity>
+
+
+                    <ActivityIndicator 
+                        size="small" 
+                        color="#0000ff"
+                        animating={animating} 
+
+                    />
+
+
+                </View>
+            </View>
+
 
         </>
     )

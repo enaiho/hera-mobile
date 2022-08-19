@@ -3,6 +3,8 @@ import { View, Text, Image, FlatList, StyleSheet, Modal, TouchableOpacity, Activ
 import { Svg, Path } from "react-native-svg";
 import * as request from "../../hooks/useHttp";
 import SolaceConfig from "../../solace_config";
+import { FlashEmergencyContact } from "./FlashEmergencyContact";
+
 
 const ContactItem = ({ name, image, confirmRemoveContact }) => {
   return (
@@ -75,7 +77,7 @@ const RemoveContactModal = ({ id, fullName, image, phoneNumber, modalVisible, to
   )
 }
 
-const ManageDependents = ({ route: { params: { user } } }) => {
+const ManageDependents = ({ route: { params: { screenWidth,screenHeight,user } }, navigation }) => {
   const initialRender = useRef(true);
 
   const [loading, setLoading] = useState(false);
@@ -174,6 +176,13 @@ const ManageDependents = ({ route: { params: { user } } }) => {
             />}
         </View>
       </View>
+                      <FlashEmergencyContact 
+                    navigation={navigation}
+                    screenWidth={screenWidth}
+                    screenHeight={screenHeight}
+                    user={user}
+
+                 />
     </>
   )
 };
