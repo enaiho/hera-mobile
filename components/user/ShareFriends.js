@@ -92,12 +92,10 @@ export default function ShareFriends({ route, navigation}){
 
                         <View style={styles.safeBtn}>
                             
-
                             <Svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <Path d="M19.9647 2.47953V13.6725C19.9647 15.0468 18.8439 16.1326 17.4696 16.1326H11.8556L6.98617 19.7848C6.67915 20.009 6.24075 19.7867 6.24075 19.4066V16.1326H2.49806C1.12379 16.1326 0.00292969 15.0117 0.00292969 13.6725V2.47953C0.00292969 1.10526 1.12379 0.0194931 2.49806 0.0194931H17.4688C18.877 0.0194931 19.9647 1.14035 19.9647 2.47953Z" fill="white"/>
                             </Svg>
                             <Text style={ styles.btnText }>TEXT MESSAGE</Text>
-
 
                         </View>
                     </TouchableOpacity>

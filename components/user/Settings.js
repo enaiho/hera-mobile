@@ -60,7 +60,12 @@ const Settings = ({ route,navigation }) => {
     ];
 
     const redirectScreen = (screen) => {
-        navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight, user: route.params.user }); 
+        try{
+            navigation.navigate(screen,{ screenWidth:screenWidth, screenHeight:screenHeight, user: route.params.user });
+        }
+        catch(e){
+            ToastAndroid.show(e.message, ToastAndroid.LONG);
+        } 
     }
 
     const MenuList = ({ props }) => {

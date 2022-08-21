@@ -6,6 +6,8 @@ import SolaceConfig from "../../solace_config";
 import { FlashEmergencyContact } from "./FlashEmergencyContact";
 
 
+
+
 const ContactItem = ({ name, image, confirmRemoveContact }) => {
   return (
     <View style={styles.contactItem}>
@@ -85,6 +87,10 @@ const ManageDependents = ({ route: { params: { screenWidth,screenHeight,user } }
   const [modalVisible, setModalVisible] = useState(false);
   const [contacts, setContacts] = useState([]);
 
+
+  const navigateBack = () => navigation.goBack();
+
+  
   const fetchDependents = async () => {
     const parsedUser = JSON.parse(user);
     return await request.useHttpGet(`${SolaceConfig.SERVER_URL}/user/dependents/${parsedUser.phone}`);
@@ -134,9 +140,16 @@ const ManageDependents = ({ route: { params: { screenWidth,screenHeight,user } }
     <>
       <RemoveContactModal {...selectedItem} modalVisible={modalVisible} setModalVisible={setModalVisible} removeContact={removeContact} toggleModalVisible={toggleModalVisible} />
       <View style={styles.header}>
-        <Svg style={styles.headerImage} width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <Path d="M10.9998 21.5C10.616 21.5 10.232 21.3535 9.93945 21.0605L0.939453 12.0605C0.353516 11.4746 0.353516 10.5254 0.939453 9.93945L9.93945 0.939453C10.5254 0.353516 11.4746 0.353516 12.0605 0.939453C12.6465 1.52539 12.6465 2.47461 12.0605 3.06055L4.12086 11L12.0615 18.9406C12.6474 19.5266 12.6474 20.4758 12.0615 21.0617C11.7685 21.3547 11.3841 21.5 10.9998 21.5Z" fill="#191414" />
-        </Svg>
+        
+
+        <TouchableOpacity
+          onPress={navigateBack}>
+          <Svg style={styles.headerImage} width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <Path d="M10.9998 21.5C10.616 21.5 10.232 21.3535 9.93945 21.0605L0.939453 12.0605C0.353516 11.4746 0.353516 10.5254 0.939453 9.93945L9.93945 0.939453C10.5254 0.353516 11.4746 0.353516 12.0605 0.939453C12.6465 1.52539 12.6465 2.47461 12.0605 3.06055L4.12086 11L12.0615 18.9406C12.6474 19.5266 12.6474 20.4758 12.0615 21.0617C11.7685 21.3547 11.3841 21.5 10.9998 21.5Z" fill="#191414" />
+          </Svg>
+        </TouchableOpacity>
+
+
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerText}>Manage Dependents</Text>
         </View>
