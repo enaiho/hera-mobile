@@ -310,10 +310,19 @@ const EmergencyContacts = ({ route, navigation }) => {
         ToastAndroid.show(message, ToastAndroid.LONG);
 
 
+
         fetchEmergencyContacts().then( res => {
 
             setContacts(res.contacts);
             setLoading(false);
+            navigation.navigate("Panic",{
+
+                screenWidth:screenWidth,
+                screenHeight:screenHeight,
+                uswer:user
+
+
+            })
 
         });
     }
@@ -351,7 +360,7 @@ const EmergencyContacts = ({ route, navigation }) => {
     }
 
     return (
-
+    
       <>
 
         <SelectContacts
