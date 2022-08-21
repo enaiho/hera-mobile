@@ -94,11 +94,8 @@ const Settings = ({ route,navigation }) => {
 
     const logoutUser = async() => {
 
-
         await AsyncStorage.removeItem('userdata_key'); // the user object coming has already been stringified.
         return navigation.navigate("Registration");
-
-
     }
 
 
@@ -132,49 +129,60 @@ const Settings = ({ route,navigation }) => {
 
             <View style={styles.container}>
 
-
                 <View style={styles.accountSettings}>
 
-                    <Text style={styles.txtNumber}>Account Settings </Text>
-                        <Image
-                          style={styles.imgProfile}
-                          source={require('../../assets/images/avatar.jpeg')}
-                        />
-
-                      <Text style={styles.profileName}>{fname} {lname}</Text>
-
-
-                      <TouchableOpacity
-                        style={ styles.btnEditProfile }
-                        onPress={ () => navigation.navigate("EditProfile", { screenWidth:screenWidth,screenHeight:screenHeight,user:user }) }>
-
-                        <Text style={ styles.btnText }>Edit Profile</Text>
-
-                      </TouchableOpacity>
-
-
-                    <FlatList
-
-                        data={menuData} 
-                        renderItem={renderMenuItem} 
-                        keyExtractor={item => item.id} 
-                        extraData={refresh}
-                        refreshing={true}
-                        style={styles.settingsMenu}
-
-                    />
-
-
-
-                     <View style={styles.semiContainer}>
-
-                         <TouchableOpacity
-                            style={ styles.btn }
-                            onPress = { logoutPrompt }>
-                            <Text style={ styles.btnTxtLogout }>Log out</Text>
+                    <View>
+                        <TouchableOpacity
+                         onPress = { () => navigation.navigate("Panic", { screenWidth,screenHeight,user}) }>
+                            <Svg style={styles.headerImage} width="13" height="22" viewBox="0 0 13 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <Path d="M10.9998 21.5C10.616 21.5 10.232 21.3535 9.93945 21.0605L0.939453 12.0605C0.353516 11.4746 0.353516 10.5254 0.939453 9.93945L9.93945 0.939453C10.5254 0.353516 11.4746 0.353516 12.0605 0.939453C12.6465 1.52539 12.6465 2.47461 12.0605 3.06055L4.12086 11L12.0615 18.9406C12.6474 19.5266 12.6474 20.4758 12.0615 21.0617C11.7685 21.3547 11.3841 21.5 10.9998 21.5Z" fill="#191414" />
+                            </Svg>
                         </TouchableOpacity>
+                    </View>
+
+                    <View>
+
+                        <Text style={styles.txtTitle}>Account Settings </Text>
+                            <Image
+                              style={styles.imgProfile}
+                              source={require('../../assets/images/avatar.jpeg')}
+                            />
+
+                          <Text style={styles.profileName}>{fname} {lname}</Text>
+
+
+                          <TouchableOpacity
+                            style={ styles.btnEditProfile }
+                            onPress={ () => navigation.navigate("EditProfile", { screenWidth:screenWidth,screenHeight:screenHeight,user:user }) }>
+
+                            <Text style={ styles.btnText }>Edit Profile</Text>
+
+                          </TouchableOpacity>
+                        <FlatList
+
+                            data={menuData} 
+                            renderItem={renderMenuItem} 
+                            keyExtractor={item => item.id} 
+                            extraData={refresh}
+                            refreshing={true}
+                            style={styles.settingsMenu}
+
+                        />
+                         <View style={styles.semiContainer}>
+
+                             <TouchableOpacity
+                                style={ styles.btn }
+                                onPress = { logoutPrompt }>
+                                <Text style={ styles.btnTxtLogout }>Log out</Text>
+                            </TouchableOpacity>
+
+                        </View>
+
 
                     </View>
+
+
+
                 </View>           
             </View>
 
@@ -233,14 +241,15 @@ export const _styles = (props) =>  StyleSheet.create({
         fontSize:14,
         textTransform:"uppercase"
     },
-    txtNumber:{
+    txtTitle:{
         fontFamily:"EuclidCircularBold",
         fontSize:24,
         color:"#0A1F44",
         width:343,
         height:32,
         textAlign:"center",
-        alignSelf:"center"
+        alignSelf:"center",
+        bottom:22
 
     },
     
