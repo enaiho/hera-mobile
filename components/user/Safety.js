@@ -1,24 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Emoji from 'react-native-emoji';
 export default function Safety({route, navigation}){
 
 
-
-
     const { screenWidth,screenHeight }  = route.params;
-    //const emoji = emoticons.parse('[GRIMACING FACE]');
-    //const smileyCircleRadius = (screenWidth/2)-80;
     const props = {screenWidth:screenWidth, screenHeight:screenHeight};
     const styles = _styles(props);
-
     
-    const finishSafety = () =>{
-
-        // alert("finish safety. ");
-        navigation.navigate("Panic");
-
-    }
+    const finishSafety = () => navigation.navigate("Panic");
 
     return (
 
@@ -56,12 +47,11 @@ export default function Safety({route, navigation}){
             </View>
         
         </View>
-
-
     )
-
-
 }
+
+
+
 
 export const _styles = (props) => StyleSheet.create({
 

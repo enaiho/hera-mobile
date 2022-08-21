@@ -13,6 +13,9 @@ import Checkbox from 'expo-checkbox';
 export default function Registration({navigation}){
 
 
+
+
+
     const [screenWidth,screenHeight] = [Dimensions.get("window").width,Dimensions.get("window").height]
     const [errMsg,setErrMsg] = useState("");
  
@@ -22,6 +25,15 @@ export default function Registration({navigation}){
         "screenWidth":screenWidth,
         "screenHeight":screenHeight
     }
+
+
+    return(
+
+        <View>
+            { navigation.navigate( "Notifications", { screenWidth,screenHeight } ) }
+        </View>
+
+    )
 
 
     const BASE_URL = "https://hera-dev.herokuapp.com";

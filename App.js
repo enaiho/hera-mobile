@@ -12,7 +12,7 @@ import { StyleSheet, View, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Notifications from 'expo-notifications';
+import * as Notification from 'expo-notifications';
 import { Svg, Path } from 'react-native-svg';
 
 
@@ -57,7 +57,7 @@ const Stack = createStackNavigator();
 
 
 
-Notifications.setNotificationHandler({
+Notification.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: false,
     shouldPlaySound: false,
@@ -84,7 +84,7 @@ export default function App() {
 
   useEffect(() => {
 
-    Notifications.addNotificationReceivedListener(handleNotification);
+    Notification.addNotificationReceivedListener(handleNotification);
     // Notifications.addNotificationResponseReceivedListener(_handleNotificationResponse);
 
   }, []);
@@ -114,12 +114,6 @@ export default function App() {
     const { email, triggerId, pushType } = parseDataFromPN;
 
 
-    // const dataFromPN = JSON.parse(b)
-    //{"triggerId":"","email":"osahonmichael@yahoo.com","pushType":"location"}
-    // console.log( typeof body);
-    // return;
-
-
     if (pushType === "location") {
 
 
@@ -136,8 +130,6 @@ export default function App() {
         triggerId: triggerId
 
       }
-
-
 
       try {
 
@@ -185,8 +177,6 @@ export default function App() {
     );
   }
 
-
-
   isUserAuthenticated().then(response => SetAuth(response));
 
 
@@ -201,10 +191,12 @@ export default function App() {
             <View style={styles.container}>
 
               <NavigationContainer>
-                <Stack.Navigator>
+                <Stack.Navigator
 
-
-
+                  screenOptions={{
+                    headerStyle: { elevation: 0 },
+                    cardStyle: { backgroundColor: '#FFFFFF' }
+                  }}>
 
                   <Stack.Screen name="Panic" screenWidth={screenWidth} options={{ headerShown: false }}>
                     {(props) => <Panic {...props} />}
@@ -269,7 +261,11 @@ export default function App() {
         <EmergencyContactContextUpdate.Provider value={setValid}>
           <View style={styles.container}>
             <NavigationContainer>
-              <Stack.Navigator>
+              <Stack.Navigator
+                screenOptions={{
+                  headerStyle: { elevation: 0 },
+                  cardStyle: { backgroundColor: '#FFFFFF' }
+                  }}>
 
                 <Stack.Screen name="Registration" options={{ headerShown: false }}>
                   {(props) => <Registration {...props} />}
@@ -278,8 +274,6 @@ export default function App() {
                 <Stack.Screen name="ManageCircle" screenWidth={screenWidth} screenHeight={screenHeight} options={{ headerShown: false }}>
                   {(props) => <ManageCircle {...props} />}
                 </Stack.Screen>
-
-
 
                 <Stack.Screen name="PhoneNumberEntry" component={PhoneNumberEntry} options={{ headerShown: false }}></Stack.Screen>
                 <Stack.Screen name="VerifyPhone" component={VerifyPhone} options={{ headerShown: false }}></Stack.Screen>
