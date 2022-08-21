@@ -14,18 +14,13 @@ export default function ShareFriends({ route, navigation}){
     const { screenWidth,screenHeight,triggerId,incidentId,incidentMessage } = route.params;
     const pinCircleRadius = (screenWidth/2)-80;
     const keyCircleRadius = (screenWidth/2)-110;
-    const [pin,updatePin] = useState("");
     const [textPin,updateTextPin] = useState("");
     const styleProps = {screenWidth:screenWidth,screenHeight:screenHeight};
     const styles = _styles(styleProps);
     const BASE_URL = SolaceConfig.SERVER_URL;
     const [animating,setAnimating] = useState(false);
 
-
-    const confirmSafety = async () => {
-
-    }
-
+    
     const share = async () => {
 
         try {
@@ -93,7 +88,7 @@ export default function ShareFriends({ route, navigation}){
 
                     <TouchableOpacity
                         style={ [styles.btnSafety,styles.btnTextMessage ] }
-                        onPress = { confirmSafety }>
+                        onPress = { share }>
 
                         <View style={styles.safeBtn}>
                             

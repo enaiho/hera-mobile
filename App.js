@@ -35,6 +35,7 @@ import PanicEmergencyMessage from './components/user/PanicEmergencyMessage';
 import ManageDependents from './components/user/ManageDependents';
 import PanicError from './components/user/PanicError';
 import ShareFriends from './components/user/ShareFriends';
+import About from './components/guest/About';
 
 
 
@@ -243,6 +244,11 @@ export default function App() {
                     component={ShareFriends}
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="About"
+                    component={About}
+                    options={{ headerShown: false }}
+                  />
 
                 </Stack.Navigator>
               </NavigationContainer>
@@ -306,6 +312,12 @@ export default function App() {
                   component={ShareFriends}
                   options={{ headerShown: false }}
                 />
+                <Stack.Screen
+                  name="About"
+                  component={About}
+                  options={{ headerShown: false }}
+                />
+
 
               </Stack.Navigator>
             </NavigationContainer>
