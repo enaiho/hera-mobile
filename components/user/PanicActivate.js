@@ -17,7 +17,6 @@ import SolaceConfig from "../../solace_config";
 export default function PanicActivate({ route, navigation}){
 
 
-
     useEffect( ()=>{
     })
 
