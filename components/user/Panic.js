@@ -158,7 +158,7 @@ const Panic = ({ route,navigation }) => {
 
 
 
-            console.log( noContact );
+            // console.log( noContact );
             // return;
 
 

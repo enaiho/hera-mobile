@@ -105,12 +105,6 @@ const Settings = ({ route,navigation }) => {
     const logoutPrompt = () => {
 
 
-
-        // alert( "testing logout user" );
-        // setModalVisible(true);
-
-
-
       Alert.alert('Logout from Solace', 'Are you sure you want to logout from Solace?', [
           {
             text: 'No'

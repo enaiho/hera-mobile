@@ -36,6 +36,7 @@ import ManageDependents from './components/user/ManageDependents';
 import PanicError from './components/user/PanicError';
 import ShareFriends from './components/user/ShareFriends';
 import About from './components/guest/About';
+import Notifications from './components/user/Notifications';
 
 
 
@@ -150,9 +151,6 @@ export default function App() {
         }
         else { console.log(data); }
 
-
-
-
       }
       catch (e) {
 
@@ -164,12 +162,9 @@ export default function App() {
 
   }
 
-
   const LoadFonts = async () => {
     await useFonts();
   };
-
-
 
   const isUserAuthenticated = async () => {
 
@@ -179,7 +174,6 @@ export default function App() {
     return false;
 
   }
-
 
   if (!IsReady) {
     return (
@@ -249,6 +243,11 @@ export default function App() {
                     component={About}
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="Notifications"
+                    component={Notifications}
+                    options={{ headerShown: false }}
+                  />
 
                 </Stack.Navigator>
               </NavigationContainer>
@@ -257,7 +256,6 @@ export default function App() {
         </EmergencyContactContext.Provider>
 
       </>
-
 
     );
 
@@ -315,6 +313,11 @@ export default function App() {
                 <Stack.Screen
                   name="About"
                   component={About}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="Notifications"
+                  component={Notifications}
                   options={{ headerShown: false }}
                 />
 
